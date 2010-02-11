@@ -1,8 +1,16 @@
-from meme import MemeRepository
+from meme import MemeRepository, PostRepository
 
-class MemeApi(object):
+class Meme(object):
     meme_repository = MemeRepository()
-
+    
     @staticmethod
-    def popular(locale='en'):
-        return MemeApi.meme_repository.popular(locale)
+    def get(name=None):
+        return Meme.meme_repository.get(name)
+        
+    class Posts(object):
+        post_repository = PostRepository()
+
+        @staticmethod
+        def popular(locale='en'):
+            return Meme.Posts.post_repository.popular(locale)
+        

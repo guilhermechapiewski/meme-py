@@ -1,18 +1,22 @@
-from meme import MemeApi
-
-def print_memes(memes):
-    for meme in memes:
-        print meme.caption
+from meme import Meme
 
 # auth
 #MemeApi.authenticate(user='gchapiewski', passwd='mypasswd')
 
-# examples
-print_memes(MemeApi.popular())
-print_memes(MemeApi.popular(locale='pt'))
+# --> examples - posts
+print '========== Popular memes =========='
+print Meme.Posts.popular()
 
-# SELECT * FROM meme.following WHERE owner_guid in 
-# (select guid from meme.info where name = "guilherme_chapiewski")
+print '========== Popular memes from Brazil =========='
+print Meme.Posts.popular(locale='pt')
 
-#print_users
-#MemeApi.get_meme('guilherme_chapiewski').following()
+# --> examples - memes
+meme = Meme.get(name='guilherme_chapiewski')
+print '========== guilherme_chapiewski Meme =========='
+print meme
+
+print '========== Memes following guilherme_chapiewski Meme =========='
+print meme.following()
+
+print '========== 50 Memes following guilherme_chapiewski Meme =========='
+print meme.following(count=50)
