@@ -1,7 +1,7 @@
 import yql
 
-class MemeApi(object):
-    def __init__(self, user, passwd):
+class MemeRepository(object):
+    def __init__(self):
         self.yql = yql.Public()
 
     def _yql_query(self, query):
@@ -11,7 +11,7 @@ class MemeApi(object):
             memes.append(Meme(row))
         return memes
 
-    def popular(self, locale='pt'):
+    def popular(self, locale):
         query = 'SELECT * FROM meme.popular WHERE locale="%s"' % locale;
         return self._yql_query(query)
     
