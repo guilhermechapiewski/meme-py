@@ -31,14 +31,12 @@ class Meme(object):
         self.type = data['type']
     
     def __repr__(self):
-        mask = u'Meme[guid=%s, type=%s]'
-        return mask % (self.guid, self.type)
+        return u'Meme[guid=%s, type=%s]' % (self.guid, self.type)
     
     def __unicode__(self):
-        mask = u'MemePost[comment=%s, via_guid=%s, url=%s, timestamp=%s, \
+        return u'MemePost[comment=%s, via_guid=%s, url=%s, timestamp=%s, \
                 pubid=%s, repost_count=%s, origin_guid=%s, content=%s, \
-                caption=%s, origin_pubid=%s, guid=%s, type=%s]'
-        return mask % (self.comment, self.via_guid, self.url, 
-                self.timestamp, self.pubid, self.repost_count, 
-                self.origin_guid, self.content, self.caption, 
-                self.origin_pubid, self.guid, self.type)
+                caption=%s, origin_pubid=%s, guid=%s, type=%s]'% (
+                self.comment, self.via_guid, self.url, self.timestamp, 
+                self.pubid, self.repost_count, self.origin_guid, self.content, 
+                self.caption, self.origin_pubid, self.guid, self.type)
