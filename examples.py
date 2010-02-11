@@ -14,6 +14,9 @@ print Meme.Posts.popular(locale='pt')
 meme = Meme.get(name='guilherme_chapiewski')
 print '========== guilherme_chapiewski Meme =========='
 print meme
+print meme.title
+print meme.description 
+print meme.url
 
 print '========== Memes following guilherme_chapiewski Meme =========='
 print meme.following()
