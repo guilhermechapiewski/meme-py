@@ -17,7 +17,6 @@ class MemeApi(object):
     
 class Meme(object):
     def __init__(self, data):
-        self.category = data['category']
         self.comment = data['comment']
         self.via_guid = data['via_guid']
         self.url = data['url']
