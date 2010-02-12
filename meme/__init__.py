@@ -1,5 +1,7 @@
 from meme import MemeRepository, PostRepository
 
+VERSION = '0.0.1'
+
 class Meme(object):
     meme_repository = MemeRepository()
     
