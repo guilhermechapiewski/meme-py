@@ -30,7 +30,3 @@ print meme.following()
 
 print '========== 50 Memes following guilherme_chapiewski Meme =========='
 print meme.following(count=50)
-
-# auth
-#MemeApi.authenticate(user='gchapiewski', passwd='mypasswd')
-

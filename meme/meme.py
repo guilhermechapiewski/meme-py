@@ -1,9 +1,23 @@
+import httplib
 import yql
+
+API_KEY = 'dj0yJmk9RW1TaFkzN1NNcVFMJmQ9WVdrOVJXRlZjbnBpTm1zbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1hYg--'
+SECRET = 'd09162c0f9d12b3845668301a2776bec8fa5bd23'
 
 class Repository(object):
     def __init__(self):
         self.yql = yql.Public()
-        
+        self.yql_private = None
+    
+    def _private_yql_query(self, query):
+        if not self.yql_private:
+            self.yql_private = yql.ThreeLegged(API_KEY, SECRET)
+            request_token, auth_url = self.yql_private.get_token_and_auth_url()
+            #TODO: USER AUTHENTICATES HERE
+            access_token = self.yql_private.get_access_token(request_token, verifier)
+            
+        self.yql_private.execute(query, token=access_token)
+
 class MemeRepository(Repository):
     def __init__(self):
         super(MemeRepository, self).__init__()
@@ -26,6 +40,11 @@ class MemeRepository(Repository):
         guid = self.get(name).guid #TODO: evaluate performace impacts
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
         return self._yql_query(query)
+    
+    def post(self, content):
+        post_type = 'text'
+        query = 'INSERT INTO meme.user.posts (type, content) VALUES ("%s", "%s")' % (post_type, content)
+        self._private_yql_query(query)
         
 class PostRepository(Repository):
     def __init__(self):
@@ -70,8 +89,8 @@ class Post(object):
         self.guid = data['guid'] #meme id
         self.pubid = data['pubid'] #post id
         self.type = data['type']
-        self.content = data['content']
         self.caption = data['caption']
+        self.content = data['content']
         self.comment = data['comment'] if 'comment' in data else None
         self.url = data['url']
         self.timestamp = data['timestamp']
