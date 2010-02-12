@@ -23,3 +23,7 @@ print meme.following()
 
 print '========== 50 Memes following guilherme_chapiewski Meme =========='
 print meme.following(count=50)
+
+print '========== Sample search =========='
+posts = Meme.Posts.search('meme rocks')
+print posts

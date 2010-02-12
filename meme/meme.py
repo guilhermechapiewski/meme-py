@@ -41,6 +41,10 @@ class PostRepository(Repository):
     def popular(self, locale):
         query = 'SELECT * FROM meme.popular WHERE locale="%s"' % locale
         return self._yql_query(query)
+    
+    def search(self, query):
+        query = 'SELECT * FROM meme.search WHERE query="%s"' % query
+        return self._yql_query(query)
 
 class Meme(object):
     def __init__(self, data):
@@ -68,21 +72,15 @@ class Post(object):
         self.type = data['type']
         self.content = data['content']
         self.caption = data['caption']
-        self.comment = data['comment']
+        self.comment = data['comment'] if 'comment' in data else None
         self.url = data['url']
         self.timestamp = data['timestamp']
-        self.origin_guid = data['origin_guid'] #if empty then not a repost
-        self.origin_pubid = data['origin_pubid'] #if empty then not a repost
-        self.via_guid = data['via_guid'] #if empty then not a repost
         self.repost_count = data['repost_count']
+        
+        #if empty then not a repost
+        self.origin_guid = data['origin_guid'] if 'origin_guid' in data else None
+        self.origin_pubid = data['origin_pubid'] if 'origin_pubid' in data else None
+        self.via_guid = data['via_guid'] if 'via_guid' in data else None
     
     def __repr__(self):
         return u'Post[guid=%s, pubid=%s, type=%s]' % (self.guid, self.pubid, self.type)
-    
-    def __unicode__(self):
-        return u'Post[comment=%s, via_guid=%s, url=%s, timestamp=%s, \
-                pubid=%s, repost_count=%s, origin_guid=%s, content=%s, \
-                caption=%s, origin_pubid=%s, guid=%s, type=%s]'% (
-                self.comment, self.via_guid, self.url, self.timestamp, 
-                self.pubid, self.repost_count, self.origin_guid, self.content, 
-                self.caption, self.origin_pubid, self.guid, self.type)

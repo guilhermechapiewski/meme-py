@@ -8,7 +8,7 @@ class Meme(object):
     @staticmethod
     def get(name=None):
         return Meme.meme_repository.get(name)
-        
+    
     class Posts(object):
         post_repository = PostRepository()
 
@@ -16,3 +16,6 @@ class Meme(object):
         def popular(locale='en'):
             return Meme.Posts.post_repository.popular(locale)
         
+        @staticmethod
+        def search(query):
+            return Meme.Posts.post_repository.search(query)
