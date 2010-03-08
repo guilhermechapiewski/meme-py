@@ -54,6 +54,9 @@ class PostRepository(Repository):
 
     def _yql_query(self, query):
         result = self.yql.execute(query)
+        if result.count == 1:
+            return Post(result.rows)
+            
         posts = []
         for row in result.rows:
             posts.append(Post(row))
@@ -68,15 +71,16 @@ class PostRepository(Repository):
         return self._yql_query(query)
 
 class Meme(object):
-    def __init__(self, data):
-        self.guid = data['guid']
-        self.name = data['name']
-        self.title = data['title']
-        self.description = data['description']
-        self.url = data['url']
-        self.avatar_url = data['avatar_url']
-        self.language = data['language']
-        self.follower_count = data['followers']
+    def __init__(self, data=None):
+        if data:
+            self.guid = data['guid']
+            self.name = data['name']
+            self.title = data['title']
+            self.description = data['description']
+            self.url = data['url']
+            self.avatar_url = data['avatar_url']
+            self.language = data['language']
+            self.follower_count = data['followers']
         
         self.meme_repository = MemeRepository()
     

@@ -2,7 +2,7 @@ import unittest
 
 from mockito import *
 
-from meme.meme import MemeRepository
+from meme.meme import Meme, MemeRepository, PostRepository
 
 class MemeRepositoryTest(unittest.TestCase):
     
@@ -60,3 +60,58 @@ class MemeRepositoryTest(unittest.TestCase):
         assert len(memes) == 2
         assert memes[0].guid == '456'
         assert memes[1].guid == '789'
+
+class PostRepositoryTest(unittest.TestCase):
+    
+    def test_should_get_popular_posts_by_language(self):
+        yql_mock = Mock()
+        yql_query = 'SELECT * FROM meme.popular WHERE locale="pt"'
+        query_result = Mock()
+        query_result.rows = []
+        query_result.rows.append({'guid':'123', 'pubid':'123', 
+                'type':'post', 'caption':'blah', 'content':'blah', 
+                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
+                'timestamp':'1234567890', 'repost_count':'12345'})
+        query_result.rows.append({'guid':'456', 'pubid':'456', 
+                'type':'post', 'caption':'blah', 'content':'blah', 
+                'comment':'blah', 'url':'http://meme.yahoo.com/p/456', 
+                'timestamp':'1234567890', 'repost_count':'12345'})
+        query_result.count = 2
+        when(yql_mock).execute(yql_query).thenReturn(query_result)
+
+        repository = PostRepository()
+        repository.yql = yql_mock
+
+        posts = repository.popular('pt')
+        assert len(posts) == 2
+
+    def test_should_search_posts(self):
+        yql_mock = Mock()
+        yql_query = 'SELECT * FROM meme.search WHERE query="a sample query"'
+        query_result = Mock()
+        query_result.rows = {'guid':'123', 'pubid':'123', 
+                'type':'post', 'caption':'blah', 'content':'blah', 
+                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
+                'timestamp':'1234567890', 'repost_count':'12345'}
+        query_result.count = 1
+        when(yql_mock).execute(yql_query).thenReturn(query_result)
+
+        repository = PostRepository()
+        repository.yql = yql_mock
+
+        post = repository.search('a sample query')
+        assert post.guid == '123'
+
+class MemeTest(unittest.TestCase):
+    
+    def test_should_get_memes_following_a_meme(self):
+        meme_repository_mock = Mock()
+        when(meme_repository_mock).following('some_name', 10).thenReturn('memes_following')
+        
+        meme = Meme()
+        meme.meme_repository = meme_repository_mock
+        meme.name = 'some_name'
+        
+        assert meme.following() == 'memes_following'
+        
+
