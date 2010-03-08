@@ -10,14 +10,14 @@ class Repository(object):
         self.yql_private = None
     
     #TODO
-    def _private_yql_query(self, query):
-        if not self.yql_private:
-            self.yql_private = yql.ThreeLegged(API_KEY, SECRET)
-            request_token, auth_url = self.yql_private.get_token_and_auth_url()
-            #TODO: USER AUTHENTICATES HERE
-            access_token = self.yql_private.get_access_token(request_token, verifier)
-            
-        self.yql_private.execute(query, token=access_token)
+    #def _private_yql_query(self, query):
+    #    if not self.yql_private:
+    #        self.yql_private = yql.ThreeLegged(API_KEY, SECRET)
+    #        request_token, auth_url = self.yql_private.get_token_and_auth_url()
+    #        #TODO: USER AUTHENTICATES HERE
+    #        access_token = self.yql_private.get_access_token(request_token, verifier)
+    #        
+    #    self.yql_private.execute(query, token=access_token)
 
 class MemeRepository(Repository):
     def __init__(self):
@@ -42,10 +42,11 @@ class MemeRepository(Repository):
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
         return self._yql_query(query)
     
-    def post(self, content):
-        post_type = 'text'
-        query = 'INSERT INTO meme.user.posts (type, content) VALUES ("%s", "%s")' % (post_type, content)
-        self._private_yql_query(query)
+    #TODO
+    #def post(self, content):
+    #    post_type = 'text'
+    #    query = 'INSERT INTO meme.user.posts (type, content) VALUES ("%s", "%s")' % (post_type, content)
+    #    self._private_yql_query(query)
         
 class PostRepository(Repository):
     def __init__(self):

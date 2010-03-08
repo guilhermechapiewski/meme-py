@@ -26,6 +26,7 @@ compile: clean
 test: compile
 	@make clean
 	@echo "Starting tests..."
+	@export PYTHONPATH="$PYTHONPATH:`pwd`"
 	@nosetests -s --verbose --with-coverage --cover-erase --cover-package=meme tests/*
 	@make clean
 
