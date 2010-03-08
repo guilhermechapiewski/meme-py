@@ -1,0 +1,5 @@
+.h1 meme-py
+
+A Python client API to consume Yahoo! Meme's (http://meme.yahoo.com) webservices on YQL (http://developer.yahoo.com/yql).
+
+For examples, please check the file "examples.py".
