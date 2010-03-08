@@ -9,6 +9,7 @@ class Repository(object):
         self.yql = yql.Public()
         self.yql_private = None
     
+    #TODO
     def _private_yql_query(self, query):
         if not self.yql_private:
             self.yql_private = yql.ThreeLegged(API_KEY, SECRET)
