@@ -18,24 +18,24 @@ class MemePostsApiTest(unittest.TestCase):
     
     def test_should_get_popular_posts(self):
         post_repository_mock = Mock()
-        when(post_repository_mock).popular('en').thenReturn('ok')
+        when(post_repository_mock).popular('en').thenReturn('popular_posts')
         
         Meme.Posts.post_repository = post_repository_mock
         
-        assert Meme.Posts.popular() == 'ok'
+        assert Meme.Posts.popular() == 'popular_posts'
         
     def test_should_get_popular_posts_by_language(self):
         post_repository_mock = Mock()
-        when(post_repository_mock).popular('pt').thenReturn('ok')
+        when(post_repository_mock).popular('pt').thenReturn('popular_posts_from_pt')
 
         Meme.Posts.post_repository = post_repository_mock
 
-        assert Meme.Posts.popular(locale='pt') == 'ok'
+        assert Meme.Posts.popular(locale='pt') == 'popular_posts_from_pt'
         
     def test_should_search_posts(self):
         post_repository_mock = Mock()
-        when(post_repository_mock).search('a query').thenReturn('ok')
+        when(post_repository_mock).search('a query').thenReturn('search_result')
 
         Meme.Posts.post_repository = post_repository_mock
 
-        assert Meme.Posts.search('a query') == 'ok'
+        assert Meme.Posts.search('a query') == 'search_result'
