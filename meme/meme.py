@@ -1,4 +1,3 @@
-import httplib
 import yql
 
 class Repository(object):
