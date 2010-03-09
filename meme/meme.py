@@ -8,9 +8,6 @@ class Repository(object):
     
 
 class MemeRepository(Repository):
-    def __init__(self):
-        super(MemeRepository, self).__init__()
-    
     def _yql_query(self, query):
         result = self.yql.execute(query)
         if result.count == 1:
@@ -32,9 +29,6 @@ class MemeRepository(Repository):
     
         
 class PostRepository(Repository):
-    def __init__(self):
-        super(PostRepository, self).__init__()
-
     def _yql_query(self, query):
         result = self.yql.execute(query)
         if result.count == 1:
