@@ -8,11 +8,11 @@ class MemeApiTest(unittest.TestCase):
     
     def test_should_get_meme_by_name(self):
         meme_reporitory_mock = Mock()
-        when(meme_reporitory_mock).get('some_name').thenReturn(['ok'])
+        when(meme_reporitory_mock).get('some_name').thenReturn('ok')
         
         Meme.meme_repository = meme_reporitory_mock
         
-        assert Meme.get('some_name') == ['ok']
+        assert Meme.get('some_name') == 'ok'
 
 class MemePostsApiTest(unittest.TestCase):
     
