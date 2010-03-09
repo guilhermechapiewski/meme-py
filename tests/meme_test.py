@@ -23,7 +23,7 @@ class MemeRepositoryTest(unittest.TestCase):
         
         memes = repository.get('some_name')
         assert len(memes) == 1
-        assert memes[0].name == ['some_name']
+        assert memes[0].name == 'some_name'
     
     def test_should_get_memes_following_a_meme(self):
         yql_mock = Mock()
