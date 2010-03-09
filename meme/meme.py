@@ -13,10 +13,7 @@ class MemeRepository(Repository):
         if result.count == 1:
             return Meme(result.rows)
         
-        memes = []
-        for row in result.rows:
-            memes.append(Meme(row))
-        return memes
+        return [Meme(row) for row in result.rows]
     
     def get(self, name):
         query = 'SELECT * FROM meme.info WHERE name = "%s"' % name
@@ -34,10 +31,7 @@ class PostRepository(Repository):
         if result.count == 1:
             return Post(result.rows)
             
-        posts = []
-        for row in result.rows:
-            posts.append(Post(row))
-        return posts
+        return [Post(row) for row in result.rows]
 
     def popular(self, locale):
         query = 'SELECT * FROM meme.popular WHERE locale="%s"' % locale
