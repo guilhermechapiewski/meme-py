@@ -10,9 +10,6 @@ class Repository(object):
 class MemeRepository(Repository):
     def _yql_query(self, query):
         result = self.yql.execute(query)
-        if result.count == 1:
-            return Meme(result.rows)
-        
         return [Meme(row) for row in result.rows]
     
     def get(self, name):
@@ -20,7 +17,7 @@ class MemeRepository(Repository):
         return self._yql_query(query)
     
     def following(self, name, count):
-        guid = self.get(name).guid #TODO: evaluate performace impacts
+        guid = self.get(name)[0].guid #TODO: evaluate performace impacts
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
         return self._yql_query(query)
     
@@ -28,9 +25,6 @@ class MemeRepository(Repository):
 class PostRepository(Repository):
     def _yql_query(self, query):
         result = self.yql.execute(query)
-        if result.count == 1:
-            return Post(result.rows)
-            
         return [Post(row) for row in result.rows]
 
     def popular(self, locale):
