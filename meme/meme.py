@@ -1,8 +1,11 @@
 import httplib
 import yql
 
-API_KEY = 'dj0yJmk9RW1TaFkzN1NNcVFMJmQ9WVdrOVJXRlZjbnBpTm1zbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1hYg--'
-SECRET = 'd09162c0f9d12b3845668301a2776bec8fa5bd23'
+#API_KEY = 'dj0yJmk9RW1TaFkzN1NNcVFMJmQ9WVdrOVJXRlZjbnBpTm1zbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1hYg--' # gc
+#SECRET = 'd09162c0f9d12b3845668301a2776bec8fa5bd23' # gc
+
+API_KEY = 'dj0yJmk9eVFId1B4N3BNZGEzJmQ9WVdrOWJWRnBhSFpZTlRnbWNHbzlNemM1T1RRM01EazQmcz1jb25zdW1lcnNlY3JldCZ4PWE3'
+SECRET = 'ee84086f94c111c1ea40dee7d040e69ff521b2e4'
 
 class Repository(object):
     def __init__(self):
@@ -10,14 +13,13 @@ class Repository(object):
         self.yql_private = None
     
     #TODO
-    #def _private_yql_query(self, query):
-    #    if not self.yql_private:
-    #        self.yql_private = yql.ThreeLegged(API_KEY, SECRET)
-    #        request_token, auth_url = self.yql_private.get_token_and_auth_url()
-    #        #TODO: USER AUTHENTICATES HERE
-    #        access_token = self.yql_private.get_access_token(request_token, verifier)
-    #        
-    #    self.yql_private.execute(query, token=access_token)
+    def _private_yql_query(self, query):
+        if not self.yql_private:
+            self.yql_private = yql.ThreeLegged(API_KEY, SECRET)
+            request_token, auth_url = self.yql_private.get_token_and_auth_url()
+            access_token = self.yql_private.get_access_token(request_token, verifier)
+            
+        self.yql_private.execute(query, token=access_token)
 
 class MemeRepository(Repository):
     def __init__(self):
@@ -43,10 +45,10 @@ class MemeRepository(Repository):
         return self._yql_query(query)
     
     #TODO
-    #def post(self, content):
-    #    post_type = 'text'
-    #    query = 'INSERT INTO meme.user.posts (type, content) VALUES ("%s", "%s")' % (post_type, content)
-    #    self._private_yql_query(query)
+    def post(self, content):
+        post_type = 'text'
+        query = 'INSERT INTO meme.user.posts (type, content) VALUES ("%s", "%s")' % (post_type, content)
+        self._private_yql_query(query)
         
 class PostRepository(Repository):
     def __init__(self):
@@ -66,6 +68,10 @@ class PostRepository(Repository):
         query = 'SELECT * FROM meme.popular WHERE locale="%s"' % locale
         return self._yql_query(query)
     
+    def searchByUser(self, user, limit=100):
+        query = 'SELECT * FROM meme.posts WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s") LIMIT %d' % (user, limit)
+        return self._yql_query(query)
+
     def search(self, query):
         query = 'SELECT * FROM meme.search WHERE query="%s"' % query
         return self._yql_query(query)
