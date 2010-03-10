@@ -14,13 +14,15 @@ class Repository(object):
 class MemeRepository(Repository):
     def _yql_query(self, query):
         result = self.yql.execute(query)
+        if result.count == 1:
+            return Meme(result.rows)
         return [Meme(row) for row in result.rows]
     
     def get(self, name):
         query = 'SELECT * FROM meme.info WHERE name = "%s"' % name
-        memes = self._yql_query(query)
-        if len(memes) > 0:
-            return memes[0]
+        meme = self._yql_query(query)
+        if meme:
+            return meme
         raise MemeNotFound("Meme %s was not found!" % name)
     
     def following(self, name, count):
@@ -32,6 +34,8 @@ class MemeRepository(Repository):
 class PostRepository(Repository):
     def _yql_query(self, query):
         result = self.yql.execute(query)
+        if result.count == 1:
+            return [Post(result.rows)]
         return [Post(row) for row in result.rows]
 
     def popular(self, locale):

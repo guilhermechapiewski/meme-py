@@ -10,11 +10,11 @@ class MemeRepositoryTest(unittest.TestCase):
         yql_mock = Mock()
         yql_query = 'SELECT * FROM meme.info WHERE name = "some_name"'
         query_result = Mock()
-        query_result.rows = [{'guid':'123', 'name':'some_name', 
+        query_result.rows = {'guid':'123', 'name':'some_name', 
                 'title':'Cool Meme title', 'description':'Meme description', 
                 'url':'http://meme.yahoo.com/some_name',
                 'avatar_url':'http://img.yahoo.com/avatar/123.jpg', 
-                'language':'pt', 'followers':5}]
+                'language':'pt', 'followers':5}
         query_result.count = 1
         when(yql_mock).execute(yql_query).thenReturn(query_result)
         
@@ -29,11 +29,11 @@ class MemeRepositoryTest(unittest.TestCase):
 
         yql_query = 'SELECT * FROM meme.info WHERE name = "some_name"'
         query_result = Mock()
-        query_result.rows = [{'guid':'123', 'name':'some_name', 
+        query_result.rows = {'guid':'123', 'name':'some_name', 
                 'title':'Cool Meme title', 'description':'Meme description', 
                 'url':'http://meme.yahoo.com/some_name',
                 'avatar_url':'http://img.yahoo.com/avatar/123.jpg', 
-                'language':'pt', 'followers':2}]
+                'language':'pt', 'followers':2}
         query_result.count = 1
         when(yql_mock).execute(yql_query).thenReturn(query_result)
         
@@ -103,10 +103,10 @@ class PostRepositoryTest(unittest.TestCase):
         yql_mock = Mock()
         yql_query = 'SELECT * FROM meme.search WHERE query="a sample query"'
         query_result = Mock()
-        query_result.rows = [{'guid':'123', 'pubid':'123', 
+        query_result.rows = {'guid':'123', 'pubid':'123', 
                 'type':'post', 'caption':'blah', 'content':'blah', 
                 'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
-                'timestamp':'1234567890', 'repost_count':'12345'}]
+                'timestamp':'1234567890', 'repost_count':'12345'}
         query_result.count = 1
         when(yql_mock).execute(yql_query).thenReturn(query_result)
 
