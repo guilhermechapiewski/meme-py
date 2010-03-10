@@ -1,9 +1,8 @@
 from setuptools import setup
 
-
 setup(
     name = "meme-py",
-    version = '0.1',
+    version = '0.0.1',
     packages = ["meme"],
     author = "Guilherme Chapiewski",
     author_email = "guilherme.chapiewski@gmail.com",
