@@ -29,8 +29,7 @@ Make sure to check these "cool Meme search tips":http://meme.yahoo.com/api/p/40G
 
 h3. Get info from a particular Meme
 
-<pre><code>
-  from meme import Meme
+<pre><code>  from meme import Meme
   meme = Meme.get(name='guilherme_chapiewski')
   print '========== guilherme_chapiewski Meme =========='
   print meme.title
