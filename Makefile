@@ -14,7 +14,7 @@ help:
 
 clean:
 	@echo "Cleaning..."
-	@rm -rf build dist *.pyc **/*.pyc *~
+	@rm -rf build dist *.pyc **/*.pyc *~ dist meme_py.egg-info
 
 compile: clean
 	@echo "Compiling source code..."

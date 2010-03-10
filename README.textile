@@ -2,6 +2,63 @@ h1. meme-py
 
 A Python client API to consume "Yahoo! Meme's":http://meme.yahoo.com webservices on "YQL":http://developer.yahoo.com/yql.
 
-This API is on an early phase of development and contributors are very welcome :) Just drop me a message at *guilherme dot chapiewski at gmail dot com*.
+h2. How to use?
 
-To understand how it works, please check the file "examples.py". We will have further documentation soon.
+Check it out some simple and cool examples (for more please check "examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples.py file):
+
+h3. Get the popular posts
+
+  from meme import Meme
+  Meme.Posts.popular()
+
+h3. Search posts
+
+  from meme import Meme
+  posts = Meme.Posts.search('meme rocks')
+  print '---------- Results for "meme rocks" ----------'
+  for post in posts:
+      print 'Content: %s' % post.content
+      print 'Caption: %s' % post.caption
+      print '----------------------------------------------'
+
+Make sure to check these "cool Meme search tips":http://meme.yahoo.com/api/p/40GGnCf/!
+
+h3. Get info from a particular Meme
+
+  from meme import Meme
+  meme = Meme.get(name='guilherme_chapiewski')
+  print '========== guilherme_chapiewski Meme =========='
+  print meme.title
+  print meme.description 
+  print meme.url
+
+h3. Get people following a Meme
+
+  from meme import Meme
+  meme = Meme.get(name='guilherme_chapiewski')
+  print meme.following(count=20)
+
+h2. How to report bugs
+
+Go to the "Issues":http://github.com/guilhermechapiewski/meme-py/issues section and please provide as much detail as you can in order to help us solve the problem.
+
+h2. How to contribute
+
+This API is on an early stage of development and contributors are very welcome :) Go ahead and "fork the project":http://github.com/guilhermechapiewski/meme-py/fork here on Github! I'll be happy to integrate your updates later, just "request pull" when you are done.
+
+If you have further questions, just drop me a message at *guilherme dot chapiewski at gmail dot com*, on Meme ("/guilherme_chapiewski":http://meme.yahoo.com/guilherme_chapiewski/) or on Twitter ("@gchapiewski":http://twitter.com/gchapiewski).
+
+h3. Contributors
+
+  * "Matheus Mendes":http://github.com/bigodines ("@bigodines":http://twitter.com/bigodines)
+  * "Hugo Lopes Tavares":http://github.com/hugobr ("@hltbra":http://twitter.com/hltbra)
+
+h2. What is Meme?
+
+Meme ("http://meme.yahoo.com":http://meme.yahoo.com) is a _light-blogging_ tool - which means that it is not as small and simple as "Twitter":http://twitter.com (micro-blogging) and not as big and full-featured as "Wordpress":http://wordpress.org (standard blogging) - created by "Yahoo!":http://yahoo.com in Brazil.
+
+For more information about Yahoo! Meme please go to:
+  * "Meme's Meme":http://meme.yahoo.com/meme/ (Meme news and general community updates)
+  * "Meme API's Meme":http://meme.yahoo.com/api/ (Meme news about API improvements)
+  * "About Yahoo! Meme":http://meme.yahoo.com/help/about/
+  * "Meme API Guide":http://developer.yahoo.com/meme/guide/
