@@ -6,13 +6,13 @@ h2. How to use?
 
 Check it out some simple and cool examples (for more please check "examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples.py file):
 
-h3. Get popular posts
+h3. Get popular posts:
 
 <pre><code>  from meme import Meme
   Meme.Posts.popular()
 </code></pre>
 
-h3. Search posts
+h3. Search posts:
 
 <pre><code>  from meme import Meme
   posts = Meme.Posts.search('meme rocks')
@@ -25,7 +25,7 @@ h3. Search posts
 
 Make sure to check these "cool Meme search tips":http://meme.yahoo.com/api/p/40GGnCf/!
 
-h3. Get info from a particular Meme
+h3. Get info from a particular Meme:
 
 <pre><code>  from meme import Meme
   meme = Meme.get(name='guilherme_chapiewski')
@@ -35,7 +35,7 @@ h3. Get info from a particular Meme
   print meme.url
 </code></pre>
 
-h3. Get people following a Meme
+h3. Get people following a Meme:
 
 <pre><code>  from meme import Meme
   meme = Meme.get(name='guilherme_chapiewski')
