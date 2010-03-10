@@ -2,6 +2,20 @@ h1. meme-py
 
 A Python client API to consume "Yahoo! Meme's":http://meme.yahoo.com webservices on "YQL":http://developer.yahoo.com/yql.
 
+h2. How to install?
+
+h3. From source:
+
+"Download the source code":http://github.com/guilhermechapiewski/meme-py/archives/master here on Github, unzip/untar the archive, go to the extracted directory and type in the command line:
+
+<pre><code>$ sudo python setup.py install</code></pre>
+
+h3. From PyPI (easiest way):
+
+You can also install from "PyPI":http://pypi.python.org/pypi/meme-py/ typing:
+
+<pre><code>$ sudo easy_install meme-py</code></pre>
+
 h2. How to use?
 
 Check it out some simple and cool examples (for more please check "examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples.py file):
