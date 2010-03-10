@@ -11,5 +11,5 @@ setup(
     keywords = "yahoo meme client api",
     url = "http://github.com/guilhermechapiewski/meme-py/",
     long_description = "Python client API to consume Yahoo! Meme's (http://meme.yahoo.com) webservices on YQL (http://developer.yahoo.com/yql). Please check the documentation on Github: http://github.com/guilhermechapiewski/meme-py/blob/master/README.textile",
-    install_requires=["yql >= 0.3"],
+    install_requires = ["yql >= 0.3"],
 )
