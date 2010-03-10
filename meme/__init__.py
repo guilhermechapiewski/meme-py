@@ -1,18 +1,11 @@
 from meme import MemeRepository, PostRepository
 
-VERSION = '0.0.1'
-
 class Meme(object):
     meme_repository = MemeRepository()
     
     @staticmethod
     def get(name=None):
         return Meme.meme_repository.get(name)
-    
-    #TODO
-    #@staticmethod
-    #def post(content):
-    #    Meme.meme_repository.post(content)
     
     class Posts(object):
         post_repository = PostRepository()

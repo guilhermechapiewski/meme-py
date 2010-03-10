@@ -14,13 +14,13 @@ help:
 
 clean:
 	@echo "Cleaning..."
-	@rm -rf build dist *.pyc **/*.pyc *~
+	@rm -rf build dist *.pyc **/*.pyc *~ dist meme_py.egg-info
 
 compile: clean
 	@echo "Compiling source code..."
 	@rm -rf meme/*.pyc
 	@rm -rf tests/*.pyc
-	@python -tt -m compileall src
+	@python -tt -m compileall meme
 	@python -tt -m compileall tests
 
 test: compile

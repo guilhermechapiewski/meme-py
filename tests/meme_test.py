@@ -2,7 +2,7 @@ import unittest
 
 from mockito import *
 
-from meme.meme import Meme, MemeRepository, PostRepository
+from meme.meme import Meme, MemeRepository, PostRepository, MemeNotFound
 
 class MemeRepositoryTest(unittest.TestCase):
     
@@ -22,7 +22,7 @@ class MemeRepositoryTest(unittest.TestCase):
         repository.yql = yql_mock
         
         meme = repository.get('some_name')
-        assert meme.name == 'some_name'
+        assert meme.guid == '123'
     
     def test_should_get_memes_following_a_meme(self):
         yql_mock = Mock()
@@ -60,6 +60,20 @@ class MemeRepositoryTest(unittest.TestCase):
         assert len(memes) == 2
         assert memes[0].guid == '456'
         assert memes[1].guid == '789'
+
+    def test_should_raise_meme_not_found_error(self):
+        yql_mock = Mock()
+        yql_query = 'SELECT * FROM meme.info WHERE name = "some_name"'
+        query_result = Mock()
+        query_result.rows = []
+        query_result.count = 0
+        when(yql_mock).execute(yql_query).thenReturn(query_result)
+
+        repository = MemeRepository()
+        repository.yql = yql_mock
+
+        self.assertRaises(MemeNotFound, repository.get, ('some_name',))
+
 
 class PostRepositoryTest(unittest.TestCase):
     
@@ -99,19 +113,20 @@ class PostRepositoryTest(unittest.TestCase):
         repository = PostRepository()
         repository.yql = yql_mock
 
-        post = repository.search('a sample query')
-        assert post.guid == '123'
+        posts = repository.search('a sample query')
+        assert len(posts) == 1
+        assert posts[0].guid == '123'
 
 class MemeTest(unittest.TestCase):
     
     def test_should_get_memes_following_a_meme(self):
         meme_repository_mock = Mock()
-        when(meme_repository_mock).following('some_name', 10).thenReturn('memes_following')
+        when(meme_repository_mock).following('some_name', 10).thenReturn(['memes_following'])
         
         meme = Meme()
         meme.meme_repository = meme_repository_mock
         meme.name = 'some_name'
         
-        assert meme.following() == 'memes_following'
+        assert meme.following() == ['memes_following']
         
 
