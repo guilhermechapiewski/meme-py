@@ -22,6 +22,10 @@ class MemeRepository(Repository):
             return meme
         raise MemeNotFound("Meme %s was not found!" % name)
     
+    def recommended(self, locale, count):
+        query = 'SELECT * FROM meme.recommended(%d) WHERE locale = "%s"' % (count, locale)
+        return self._yql_query(query)
+    
     def following(self, name, count):
         guid = self.get(name).guid #TODO: evaluate performace impacts
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
@@ -39,12 +43,12 @@ class PostRepository(Repository):
             return [Post(result.rows)]
         return [Post(row) for row in result.rows]
 
-    def popular(self, locale):
-        query = 'SELECT * FROM meme.popular WHERE locale="%s"' % locale
+    def popular(self, locale, count):
+        query = 'SELECT * FROM meme.popular(%s) WHERE locale="%s"' % (count, locale)
         return self._yql_query(query)
     
-    def search(self, query):
-        query = 'SELECT * FROM meme.search WHERE query="%s"' % query
+    def search(self, query, count):
+        query = 'SELECT * FROM meme.search(%d) WHERE query="%s"' % (count, query)
         return self._yql_query(query)
 
 class Meme(object):
