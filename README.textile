@@ -35,11 +35,12 @@ h3. Get info from a particular Meme:
   print meme.url
 </code></pre>
 
-h3. Get people following a Meme:
+h3. Get people that a Meme follows and it's followers:
 
 <pre><code>  from meme import Meme
-  meme = Meme.get(name='guilherme_chapiewski')
-  print meme.following(count=20)
+  meme = Meme.get(name='john')
+  print meme.following(count=20) # people that "john" is following
+  print meme.followers(count=20) # people that follows "john"
 </code></pre>
 
 h2. How to report bugs

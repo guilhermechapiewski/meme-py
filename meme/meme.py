@@ -1,7 +1,7 @@
 import yql
 
 class MemeNotFound(Exception):
-    """It is raised when Meme is not found."""
+    """Raised when Meme is not found."""
 
 class Repository(object):
     def __init__(self):
@@ -26,7 +26,12 @@ class MemeRepository(Repository):
         guid = self.get(name).guid #TODO: evaluate performace impacts
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
         return self._yql_query(query)
-        
+
+    def followers(self, name, count):
+        guid = self.get(name).guid #TODO: evaluate performace impacts
+        query = 'SELECT * FROM meme.followers(%d) WHERE owner_guid = "%s"' % (count, guid)
+        return self._yql_query(query)
+    
 class PostRepository(Repository):
     def _yql_query(self, query):
         result = self.yql.execute(query)
@@ -58,6 +63,9 @@ class Meme(object):
     
     def following(self, count=10):
         return self.meme_repository.following(self.name, count)
+    
+    def followers(self, count=10):
+        return self.meme_repository.followers(self.name, count)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)

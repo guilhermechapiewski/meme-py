@@ -25,8 +25,14 @@ print meme.title
 print meme.description 
 print meme.url
 
-print '========== Memes following guilherme_chapiewski Meme =========='
+print '========== Memes that guilherme_chapiewski is following =========='
 print meme.following()
 
-print '========== 50 Memes following guilherme_chapiewski Meme =========='
+print '========== 50 Memes that guilherme_chapiewski is following =========='
 print meme.following(count=50)
+
+print '========== Memes following guilherme_chapiewski Meme =========='
+print meme.followers()
+
+print '========== 50 Memes following guilherme_chapiewski Meme =========='
+print meme.followers(count=50)
