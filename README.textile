@@ -8,15 +8,13 @@ Check it out some simple and cool examples (for more please check "examples.py":
 
 h3. Get popular posts
 
-<pre><code>
-  from meme import Meme
+<pre><code>  from meme import Meme
   Meme.Posts.popular()
 </code></pre>
 
 h3. Search posts
 
-<pre><code>
-  from meme import Meme
+<pre><code>  from meme import Meme
   posts = Meme.Posts.search('meme rocks')
   print '---------- Results for "meme rocks" ----------'
   for post in posts:
@@ -39,8 +37,7 @@ h3. Get info from a particular Meme
 
 h3. Get people following a Meme
 
-<pre><code>
-  from meme import Meme
+<pre><code>  from meme import Meme
   meme = Meme.get(name='guilherme_chapiewski')
   print meme.following(count=20)
 </code></pre>
