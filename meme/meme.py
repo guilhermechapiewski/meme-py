@@ -95,15 +95,15 @@ class Post(object):
         self.type = data['type']
         self.caption = data['caption']
         self.content = data['content']
-        self.comment = data['comment'] if 'comment' in data else None
+        self.comment = data.get('comment')
         self.url = data['url']
         self.timestamp = data['timestamp']
         self.repost_count = data['repost_count']
         
         #if empty then not a repost
-        self.origin_guid = data['origin_guid'] if 'origin_guid' in data else None
-        self.origin_pubid = data['origin_pubid'] if 'origin_pubid' in data else None
-        self.via_guid = data['via_guid'] if 'via_guid' in data else None
+        self.origin_guid = data.get('origin_guid')
+        self.origin_pubid = data.get('origin_pubid')
+        self.via_guid = data.get('via_guid')
     
     def __repr__(self):
         return u'Post[guid=%s, pubid=%s, type=%s]' % (self.guid, self.pubid, self.type)
