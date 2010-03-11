@@ -34,10 +34,6 @@ class MemeRepository(Repository):
             return meme
         raise MemeNotFound("Meme %s was not found!" % name)
     
-    def recommended(self, locale, count):
-        query = 'SELECT * FROM meme.recommended(%d) WHERE locale = "%s"' % (count, locale)
-        return self._yql_query(query)
-    
     def following(self, name, count):
         guid = self.get(name).guid #TODO: evaluate performace impacts
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
