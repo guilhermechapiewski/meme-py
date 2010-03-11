@@ -26,13 +26,27 @@ class MemeRepository(Repository):
         query = 'SELECT * FROM meme.recommended(%d) WHERE locale = "%s"' % (count, locale)
         return self._yql_query(query)
     
-    def following(self, name, count):
-        guid = self.get(name).guid #TODO: evaluate performace impacts
+    def following(self, name=None, meme=None, count=10):
+        if name is None and meme is None:
+            raise TypeError("Either a name or a Meme instance must be specified")
+        if name is not None:
+            guid = self.get(name).guid
+        else:
+            if not isinstance(meme, Meme):
+                raise ValueError("meme argument must be a Meme instance")
+            guid = meme.guid
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
         return self._yql_query(query)
 
-    def followers(self, name, count):
-        guid = self.get(name).guid #TODO: evaluate performace impacts
+    def followers(self, name=None, meme=None, count=10):
+        if name is None and meme is None:
+            raise TypeError("Either a name or a Meme instance must be specified")
+        if name is not None:
+            guid = self.get(name).guid
+        else:
+            if not isinstance(meme, Meme):
+                raise ValueError("meme argument must be a Meme instance")
+            guid = meme.guid
         query = 'SELECT * FROM meme.followers(%d) WHERE owner_guid = "%s"' % (count, guid)
         return self._yql_query(query)
     
@@ -66,10 +80,10 @@ class Meme(object):
         self.meme_repository = MemeRepository()
     
     def following(self, count=10):
-        return self.meme_repository.following(self.name, count)
+        return self.meme_repository.following(meme=self, count=count)
     
     def followers(self, count=10):
-        return self.meme_repository.followers(self.name, count)
+        return self.meme_repository.followers(meme=self, count=count)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
