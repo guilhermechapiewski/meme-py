@@ -17,16 +17,27 @@ for post in posts:
     print 'Caption: %s' % post.caption
     print '----------------------------------------------'
 
-# --> examples - memes
+print '========== Get 5 recommended Memes in portuguese language =========='
+memes = Meme.recommended(locale='pt', count=5)
+print '---------- Recommended memes ----------'
+for meme in memes:
+    print "%s --- %s (%s)" % (meme.title, meme.description, meme.url)
+
+print '========== Get guilherme_chapiewski Meme =========='
 meme = Meme.get(name='guilherme_chapiewski')
-print '========== guilherme_chapiewski Meme =========='
 print meme
 print meme.title
 print meme.description 
 print meme.url
 
-print '========== Memes following guilherme_chapiewski Meme =========='
+print '========== Memes that guilherme_chapiewski is following =========='
 print meme.following()
 
-print '========== 50 Memes following guilherme_chapiewski Meme =========='
+print '========== 50 Memes that guilherme_chapiewski is following =========='
 print meme.following(count=50)
+
+print '========== Memes following guilherme_chapiewski Meme =========='
+print meme.followers()
+
+print '========== 50 Memes following guilherme_chapiewski Meme =========='
+print meme.followers(count=50)

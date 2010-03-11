@@ -4,7 +4,7 @@ API_KEY = 'dj0yJmk9RW1TaFkzN1NNcVFMJmQ9WVdrOVJXRlZjbnBpTm1zbWNHbzlNQS0tJnM9Y29uc
 SECRET = 'd09162c0f9d12b3845668301a2776bec8fa5bd23' # gc
 
 class MemeNotFound(Exception):
-    """It is raised when Meme is not found."""
+    """Raised when Meme is not found."""
 
 class Repository(object):
     def __init__(self):
@@ -34,6 +34,10 @@ class MemeRepository(Repository):
             return meme
         raise MemeNotFound("Meme %s was not found!" % name)
     
+    def recommended(self, locale, count):
+        query = 'SELECT * FROM meme.recommended(%d) WHERE locale = "%s"' % (count, locale)
+        return self._yql_query(query)
+    
     def following(self, name, count):
         guid = self.get(name).guid #TODO: evaluate performace impacts
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
@@ -45,6 +49,11 @@ class MemeRepository(Repository):
     #    query = 'INSERT INTO meme.user.posts (type, content) VALUES ("%s", "%s")' % (post_type, content)
     #    self._private_yql_query(query)
         
+    def followers(self, name, count):
+        guid = self.get(name).guid #TODO: evaluate performace impacts
+        query = 'SELECT * FROM meme.followers(%d) WHERE owner_guid = "%s"' % (count, guid)
+        return self._yql_query(query)
+    
 class PostRepository(Repository):
     def _yql_query(self, query):
         result = self.yql.execute(query)
@@ -52,16 +61,16 @@ class PostRepository(Repository):
             return [Post(result.rows)]
         return [Post(row) for row in result.rows]
 
-    def popular(self, locale):
-        query = 'SELECT * FROM meme.popular WHERE locale="%s"' % locale
+    def popular(self, locale, count):
+        query = 'SELECT * FROM meme.popular(%s) WHERE locale="%s"' % (count, locale)
         return self._yql_query(query)
     
     def searchByUser(self, user, limit=100):
         query = 'SELECT * FROM meme.posts WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s") LIMIT %d' % (user, limit)
         return self._yql_query(query)
 
-    def search(self, query):
-        query = 'SELECT * FROM meme.search WHERE query="%s"' % query
+    def search(self, query, count):
+        query = 'SELECT * FROM meme.search(%d) WHERE query="%s"' % (count, query)
         return self._yql_query(query)
 
 class Meme(object):
@@ -80,6 +89,9 @@ class Meme(object):
     
     def following(self, count=10):
         return self.meme_repository.following(self.name, count)
+    
+    def followers(self, count=10):
+        return self.meme_repository.followers(self.name, count)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)

@@ -2,6 +2,20 @@ h1. meme-py
 
 A Python client API to consume "Yahoo! Meme's":http://meme.yahoo.com webservices on "YQL":http://developer.yahoo.com/yql.
 
+h2. How to install?
+
+h3. From source:
+
+"Download the source code":http://github.com/guilhermechapiewski/meme-py/archives/master here on Github, unzip/untar the archive, go to the extracted directory and type in the command line:
+
+<pre><code>$ sudo python setup.py install</code></pre>
+
+h3. From PyPI (easiest way):
+
+You can also install from "PyPI":http://pypi.python.org/pypi/meme-py/ typing:
+
+<pre><code>$ sudo easy_install meme-py</code></pre>
+
 h2. How to use?
 
 Check it out some simple and cool examples (for more please check "examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples.py file):
@@ -25,6 +39,15 @@ h3. Search posts:
 
 Make sure to check these "cool Meme search tips":http://meme.yahoo.com/api/p/40GGnCf/!
 
+h3. Get recommended Memes:
+
+<pre><code>  from meme import Meme
+  memes = Meme.recommended(locale='pt', count=5)
+  print '---------- Recommended memes ----------'
+  for meme in memes:
+      print "%s --- %s (%s)" % (meme.title, meme.description, meme.url)
+</code></pre>
+
 h3. Get info from a particular Meme:
 
 <pre><code>  from meme import Meme
@@ -35,11 +58,12 @@ h3. Get info from a particular Meme:
   print meme.url
 </code></pre>
 
-h3. Get people following a Meme:
+h3. Get people that a Meme follows and it's followers:
 
 <pre><code>  from meme import Meme
-  meme = Meme.get(name='guilherme_chapiewski')
-  print meme.following(count=20)
+  meme = Meme.get(name='john')
+  print meme.following(count=20) # people that "john" is following
+  print meme.followers(count=20) # people that follows "john"
 </code></pre>
 
 h2. How to report bugs
