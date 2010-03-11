@@ -13,20 +13,6 @@ class MemeApiTest(unittest.TestCase):
         Meme.meme_repository = meme_reporitory_mock
         
         assert Meme.get('some_name') == 'ok'
-    
-    def test_should_get_recommended_memes(self):
-        meme_reporitory_mock = Mock()
-        when(meme_reporitory_mock).recommended('en', 10).thenReturn('ok1')
-        when(meme_reporitory_mock).recommended('pt', 10).thenReturn('ok2')
-        when(meme_reporitory_mock).recommended('en', 2).thenReturn('ok3')
-        when(meme_reporitory_mock).recommended('pt', 2).thenReturn('ok4')
-        
-        Meme.meme_repository = meme_reporitory_mock
-        
-        assert Meme.recommended() == 'ok1'
-        assert Meme.recommended(locale='pt') == 'ok2'
-        assert Meme.recommended(count=2) == 'ok3'
-        assert Meme.recommended(locale='pt', count=2) == 'ok4'
 
 class MemePostsApiTest(unittest.TestCase):
     

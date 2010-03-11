@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = "meme-py",
-    version = '0.2.0',
+    version = '0.2.1',
     packages = ["meme"],
     author = "Guilherme Chapiewski",
     author_email = "guilherme.chapiewski@gmail.com",
