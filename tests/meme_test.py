@@ -179,30 +179,6 @@ class PostRepositoryTest(unittest.TestCase):
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
         
-    def test_should_identify_original_posts(self):
-        yql_mock = Mock()
-        yql_query = 'SELECT * FROM meme.posts(2) WHERE owner_guid="foo123bar"'
-        query_result = Mock()
-        query_result.rows = []
-        #a repost
-        query_result.rows.append({'guid':'123', 'pubid':'123', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
-                'timestamp':'1234567890', 'repost_count':'12345', 'origin_guid':'666foo'})
-        #an original post
-        query_result.rows.append({'guid':'456', 'pubid':'456', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/456', 
-                'timestamp':'1234567890', 'repost_count':'12345'})
-        query_result.count = 2
-        when(yql_mock).execute(yql_query).thenReturn(query_result)
-
-        repository = PostRepository()
-        repository.yql = yql_mock
-
-        posts = repository.posts('foo123bar', 2)
-        assert posts[0].is_original == False
-        assert posts[1].is_original == True
 
 class MemeTest(unittest.TestCase):
     
