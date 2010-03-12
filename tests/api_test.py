@@ -39,3 +39,13 @@ class MemePostsApiTest(unittest.TestCase):
 
         assert Meme.Posts.search('a query') == ['search_result1']
         assert Meme.Posts.search('a query', count=40) == ['search_result2']
+    
+    def test_should_get_meme_posts(self):
+        post_repository_mock = Mock()
+        when(post_repository_mock).posts('foo', 10).thenReturn(['posts_from_foo1'])
+        when(post_repository_mock).posts('foo', 33).thenReturn(['posts_from_foo2'])
+  
+        Meme.Posts.post_repository = post_repository_mock
+        
+        assert Meme.Posts.posts('foo') == ['posts_from_foo1']
+        assert Meme.Posts.posts(guid='foo', count=33) == ['posts_from_foo2']
