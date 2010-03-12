@@ -44,6 +44,10 @@ class PostRepository(Repository):
     def search(self, query, count):
         query = 'SELECT * FROM meme.search(%d) WHERE query="%s"' % (count, query)
         return self._yql_query(query)
+    
+    def posts(self, guid, count):
+        query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, guid)
+        return self._yql_query(query)
 
 class Meme(object):
     def __init__(self, data=None):
@@ -58,12 +62,16 @@ class Meme(object):
             self.follower_count = data['followers']
         
         self.meme_repository = MemeRepository()
+        self.post_repository = PostRepository()
     
     def following(self, count=10):
         return self.meme_repository.following(self.guid, count)
     
     def followers(self, count=10):
         return self.meme_repository.followers(self.guid, count)
+    
+    def posts(self, count=10):
+        return self.post_repository.posts(self.guid, count)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
@@ -84,6 +92,12 @@ class Post(object):
         self.origin_guid = data.get('origin_guid')
         self.origin_pubid = data.get('origin_pubid')
         self.via_guid = data.get('via_guid')
+        
+        if not self.origin_guid:
+            self.is_original = True
+        else:
+            self.is_original = False
+    
     
     def __repr__(self):
         return u'Post[guid=%s, pubid=%s, type=%s]' % (self.guid, self.pubid, self.type)

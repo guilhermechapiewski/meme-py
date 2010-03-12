@@ -17,3 +17,8 @@ class Meme(object):
         @staticmethod
         def search(query, count=10):
             return Meme.Posts.post_repository.search(query, count)
+        
+        @staticmethod
+        def posts(guid, count=10):
+            return Meme.Posts.post_repository.posts(guid, count)
+
