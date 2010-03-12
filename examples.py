@@ -35,3 +35,16 @@ print meme.followers()
 
 print '========== 50 Memes following guilherme_chapiewski Meme =========='
 print meme.followers(count=50)
+
+print '========== Posts from guilherme_chapiewski Meme =========='
+gcposts = meme.posts()
+print gcposts
+print '---------- Results  ----------'
+for post in gcposts:
+    print 'Type: %s' % post.type
+    print 'Repost count: %s' % post.repost_count
+    print 'Original: %s' % post.is_original
+    print '----------------------------------------------'
+
+
+

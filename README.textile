@@ -57,6 +57,19 @@ h3. Get people that a Meme follows and it's followers:
   print meme.followers(count=20) # people that follows "john"
 </code></pre>
 
+h3. Get posts from a particular Meme:
+
+<pre><code>  from meme import Meme
+  meme = Meme.get(name='john')
+  posts = meme.posts()
+  print '---------- Results  ----------'
+  for post in gcposts:
+      print 'Type: %s' % post.type
+      print 'Repost count: %s' % post.repost_count
+      print 'Original: %s' % post.is_original # created by "john" (True) or reposted (False)
+      print '----------------------------------------------'
+</code></pre>
+
 h2. How to report bugs
 
 Go to the "Issues":http://github.com/guilhermechapiewski/meme-py/issues section and please provide as much detail as you can in order to help us solve the problem.
