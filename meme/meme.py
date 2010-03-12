@@ -22,27 +22,11 @@ class MemeRepository(Repository):
             return meme
         raise MemeNotFound("Meme %s was not found!" % name)
     
-    def following(self, name=None, meme=None, count=10):
-        if name is None and meme is None:
-            raise TypeError("Either a name or a Meme instance must be specified")
-        if name is not None:
-            guid = self.get(name).guid
-        else:
-            if not isinstance(meme, Meme):
-                raise ValueError("meme argument must be a Meme instance")
-            guid = meme.guid
+    def following(self, guid, count):
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
         return self._yql_query(query)
 
-    def followers(self, name=None, meme=None, count=10):
-        if name is None and meme is None:
-            raise TypeError("Either a name or a Meme instance must be specified")
-        if name is not None:
-            guid = self.get(name).guid
-        else:
-            if not isinstance(meme, Meme):
-                raise ValueError("meme argument must be a Meme instance")
-            guid = meme.guid
+    def followers(self, guid, count):
         query = 'SELECT * FROM meme.followers(%d) WHERE owner_guid = "%s"' % (count, guid)
         return self._yql_query(query)
     
@@ -76,10 +60,10 @@ class Meme(object):
         self.meme_repository = MemeRepository()
     
     def following(self, count=10):
-        return self.meme_repository.following(meme=self, count=count)
+        return self.meme_repository.following(self.guid, count)
     
     def followers(self, count=10):
-        return self.meme_repository.followers(meme=self, count=count)
+        return self.meme_repository.followers(self.guid, count)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
