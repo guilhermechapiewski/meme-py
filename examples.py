@@ -17,12 +17,6 @@ for post in posts:
     print 'Caption: %s' % post.caption
     print '----------------------------------------------'
 
-print '========== Get 5 recommended Memes in portuguese language =========='
-memes = Meme.recommended(locale='pt', count=5)
-print '---------- Recommended memes ----------'
-for meme in memes:
-    print "%s --- %s (%s)" % (meme.title, meme.description, meme.url)
-
 print '========== Get guilherme_chapiewski Meme =========='
 meme = Meme.get(name='guilherme_chapiewski')
 print meme

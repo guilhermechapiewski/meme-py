@@ -22,6 +22,11 @@ class MemeRepository(Repository):
             return meme
         raise MemeNotFound("Meme %s was not found!" % name)
     
+<<<<<<< HEAD:meme/meme.py
+    def recommended(self, locale, count):
+        query = 'SELECT * FROM meme.recommended(%d) WHERE locale = "%s"' % (count, locale)
+        return self._yql_query(query)
+    
     def following(self, name=None, meme=None, count=10):
         if name is None and meme is None:
             raise TypeError("Either a name or a Meme instance must be specified")
@@ -31,6 +36,10 @@ class MemeRepository(Repository):
             if not isinstance(meme, Meme):
                 raise ValueError("meme argument must be a Meme instance")
             guid = meme.guid
+=======
+    def following(self, name, count):
+        guid = self.get(name).guid #TODO: evaluate performace impacts
+>>>>>>> upstream/master:meme/meme.py
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
         return self._yql_query(query)
 

@@ -7,10 +7,6 @@ class Meme(object):
     def get(name=None):
         return Meme.meme_repository.get(name)
     
-    @staticmethod
-    def recommended(locale='en', count=10):
-        return Meme.meme_repository.recommended(locale, count)
-    
     class Posts(object):
         post_repository = PostRepository()
 
