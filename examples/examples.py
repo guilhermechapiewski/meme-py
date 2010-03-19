@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from meme import Meme
 
 # --> examples - posts
