@@ -23,11 +23,15 @@ class MemeRepositoryTest(unittest.TestCase):
         
         meme = repository.get('some_name')
         assert meme.guid == '123'
-    
+
     def test_should_get_memes_following_a_meme(self):
         yql_mock = Mock()
-
-        yql_query = 'SELECT * FROM meme.info WHERE name = "some_name"'
+        
+        
+        owner_guid = "123fooGUID"
+        #this should be exactly the same query as the 'following' method
+        yql_query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (1, owner_guid)
+        
         query_result = Mock()
         query_result.rows = {'guid':'123', 'name':'some_name', 
                 'title':'Cool Meme title', 'description':'Meme description', 
@@ -37,7 +41,15 @@ class MemeRepositoryTest(unittest.TestCase):
         query_result.count = 1
         when(yql_mock).execute(yql_query).thenReturn(query_result)
         
-        yql_query_following = 'SELECT * FROM meme.following(2) WHERE owner_guid = "123"'
+        repository = MemeRepository()
+        repository.yql = yql_mock
+                
+        meme = repository.following(owner_guid, 1)
+    
+        assert meme.guid == '123'
+
+        
+        yql_query_following = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (2, owner_guid)
         query_following_result = Mock()
         query_following_result.rows = []
         query_following_result.rows.append({'guid':'456', 'name':'some_other_name', 
@@ -55,16 +67,21 @@ class MemeRepositoryTest(unittest.TestCase):
         
         repository = MemeRepository()
         repository.yql = yql_mock
-        
-        memes = repository.following('some_name', 2)
+                
+        memes = repository.following(owner_guid, 2)
+    
         assert len(memes) == 2
+        
         assert memes[0].guid == '456'
         assert memes[1].guid == '789'
 
+
     def test_should_get_meme_followers(self):
         yql_mock = Mock()
-
-        yql_query = 'SELECT * FROM meme.info WHERE name = "some_name"'
+        
+        owner_guid = "123fooGUID"
+        yql_query =  'SELECT * FROM meme.followers(%d) WHERE owner_guid = "%s"' % (1, owner_guid)
+        
         query_result = Mock()
         query_result.rows = {'guid':'123', 'name':'some_name', 
                 'title':'Cool Meme title', 'description':'Meme description', 
@@ -73,8 +90,16 @@ class MemeRepositoryTest(unittest.TestCase):
                 'language':'pt', 'followers':2}
         query_result.count = 1
         when(yql_mock).execute(yql_query).thenReturn(query_result)
+        
+        repository = MemeRepository()
+        repository.yql = yql_mock
+                
+        meme = repository.followers(owner_guid, 1)
+    
+        assert meme.guid == '123'
 
-        yql_query_following = 'SELECT * FROM meme.followers(2) WHERE owner_guid = "123"'
+
+        yql_query_following =  'SELECT * FROM meme.followers(%d) WHERE owner_guid = "%s"' % (2, owner_guid)
         query_following_result = Mock()
         query_following_result.rows = []
         query_following_result.rows.append({'guid':'456', 'name':'some_other_name', 
@@ -93,7 +118,7 @@ class MemeRepositoryTest(unittest.TestCase):
         repository = MemeRepository()
         repository.yql = yql_mock
 
-        memes = repository.followers('some_name', 2)
+        memes = repository.followers(owner_guid, 2)
         assert len(memes) == 2
         assert memes[0].guid == '456'
         assert memes[1].guid == '789'
@@ -184,23 +209,24 @@ class MemeTest(unittest.TestCase):
     
     def test_should_get_memes_following_a_meme(self):
         meme_repository_mock = Mock()
-        when(meme_repository_mock).following('some_name', 10).thenReturn(['memes_following'])
+        when(meme_repository_mock).following('some_guid', 10).thenReturn(['memes_following'])
         
         meme = Meme()
         meme.meme_repository = meme_repository_mock
-        meme.name = 'some_name'
+        meme.guid = 'some_guid'
         
-        assert meme.following() == ['memes_following']
+        assert meme.following(10) == ['memes_following']
         
     def test_should_get_meme_followers(self):
         meme_repository_mock = Mock()
-        when(meme_repository_mock).followers('some_name', 10).thenReturn(['meme_followers'])
+        when(meme_repository_mock).followers('some_guid', 10).thenReturn(['meme_followers'])
         
         meme = Meme()
         meme.meme_repository = meme_repository_mock
-        meme.name = 'some_name'
+        meme.guid = 'some_guid'
         
-        assert meme.followers() == ['meme_followers']
+        assert meme.followers(10) == ['meme_followers']
+  
 
 class PostTest(unittest.TestCase):
     

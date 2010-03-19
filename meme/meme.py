@@ -9,6 +9,7 @@ class Repository(object):
         self.yql_private = None
 
 class MemeRepository(Repository):
+    
     def _yql_query(self, query):
         result = self.yql.execute(query)
         if result.count == 1:
