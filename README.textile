@@ -63,10 +63,24 @@ h3. Get posts from a particular Meme:
   meme = Meme.get(name='john')
   posts = meme.posts()
   print '---------- Results  ----------'
-  for post in gcposts:
+  for post in posts:
       print 'Type: %s' % post.type
       print 'Repost count: %s' % post.repost_count
       print 'Original: %s' % post.is_original # created by "john" (True) or reposted (False)
+      print '----------------------------------------------'
+</code></pre>
+
+h3. Get the activity (reposts and comments) around a particular post:
+
+<pre><code>  from meme import Meme
+  meme = Meme.get(name='john')
+  posts = meme.posts()
+  latest_post = posts[0]
+  print '---------- Results  ----------'
+  for post in latest_post.activity():
+      print 'Type: %s' % post.type #repost or commment
+      print 'Comment: %s' % post.comment
+      print 'GUID: %s' % post.guid
       print '----------------------------------------------'
 </code></pre>
 

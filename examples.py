@@ -46,5 +46,21 @@ for post in gcposts:
     print 'Original: %s' % post.is_original
     print '----------------------------------------------'
 
+print '========== The latest post from guilherme_chapiewski Meme =========='
+latest_post = gcposts[0]
+print '---------- Details  ----------'
+print 'Type: %s' % post.type
+print 'Repost count: %s' % post.repost_count
+print 'Content: %s' % post.content
+print 'Caption: %s' % post.caption
+print '----------------------------------------------'
+
+print '========== The activity around the latest post =========='
+for post in latest_post.activity():
+  print 'Type: %s' % post.type #repost or commment
+  print 'Comment: %s' % post.comment
+  print 'GUID: %s' % post.guid
+  print '----------------------------------------------'
+
 
 

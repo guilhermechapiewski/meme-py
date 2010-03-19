@@ -204,6 +204,42 @@ class PostRepositoryTest(unittest.TestCase):
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
         
+        
+    def test_should_get_activity_around_post(self):
+        #activity means reposts + comments
+        data = {'guid':'123', 'pubid':'456', 
+                'type':'post', 'caption':'blah', 'content':'blah', 
+                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
+                'timestamp':'1234567890', 'repost_count':'12345'}                
+        post = Post(data)
+        
+        yql_mock = Mock()
+        
+        
+        activity_result = Mock()
+        activity_result.rows = []
+        activity_result.rows.append({'guid':'123', 'pubid':'123', 
+                'type':'repost', 'caption':'blah', 'content':'blah', 
+                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
+                'timestamp':'1234567890', 'repost_count':'12345'})
+        activity_result.rows.append({'guid':'456', 'pubid':'456', 
+                'type':'comment', 'caption':'blah', 'content':'blah', 
+                'comment':'blah', 'url':'http://meme.yahoo.com/p/456', 
+                'timestamp':'1234567890', 'repost_count':'12345'})
+        
+        yql_query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (2, '123', '456')
+        
+        when(yql_mock).execute(yql_query).thenReturn(activity_result)
+        
+        repository = PostRepository()
+        repository.yql = yql_mock
+        
+        activity = repository.activity('123', '456', 2)
+        assert len(activity) == 2
+        
+        assert activity[0].type == 'repost'
+        assert activity[1].type == 'comment'
+        
 
 class MemeTest(unittest.TestCase):
     
@@ -229,6 +265,45 @@ class MemeTest(unittest.TestCase):
   
 
 class PostTest(unittest.TestCase):
+
+    def test_should_return_post_activity(self):
+        post_repository_mock = Mock()
+        when(post_repository_mock).activity('some_guid', 'some_pubid', 10).thenReturn(['post_activity'])
+        
+        data = {'guid':'some_guid', 'pubid':'some_pubid', 
+                'type':'post', 'caption':'blah', 'content':'blah', 
+                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
+                'timestamp':'1234567890', 'repost_count':'12345'}      
+        
+        post = Post(data)
+        post.post_repository = post_repository_mock
+        
+        assert post.activity(10) == ['post_activity']
+    
+    def test_should_return_post_without_optional_fields(self):
+        """"
+        #optional data
+        self.content
+        self.caption
+        self.comment
+        self.origin_guid
+        self.origin_pubid
+        self.via_guid
+        self.url
+        """
+        data = {'guid':'123', 'pubid':'123', 
+                'type':'post',
+                'timestamp':'1234567890', 'repost_count':'12345'}
+        
+        post = Post(data)  
+        assert post.guid == '123'
+        assert post.content == None
+        assert post.comment == None
+        assert post.origin_guid == None
+        assert post.origin_pubid == None
+        assert post.via_guid == None
+        assert post.url == None
+        
     
     def test_should_identify_post_as_original(self):
         #this is an original post
@@ -247,3 +322,7 @@ class PostTest(unittest.TestCase):
                 'timestamp':'1234567890', 'repost_count':'12345', 'origin_guid':'666foo'}
         
         assert Post(data).is_original == False
+    
+    
+    
+        

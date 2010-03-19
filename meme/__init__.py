@@ -21,4 +21,8 @@ class Meme(object):
         @staticmethod
         def posts(guid, count=10):
             return Meme.Posts.post_repository.posts(guid, count)
+        
+        @staticmethod
+        def activity(guid, pubid, count=10):
+            return Meme.Posts.post_repository.activity(guid, pubid, count)
 

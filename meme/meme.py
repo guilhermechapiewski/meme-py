@@ -49,6 +49,12 @@ class PostRepository(Repository):
     def posts(self, guid, count):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, guid)
         return self._yql_query(query)
+    
+    def activity(self, guid, pubid, count):
+        query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
+        return self._yql_query(query)      
+
+
 
 class Meme(object):
     def __init__(self, data=None):
@@ -79,26 +85,31 @@ class Meme(object):
 
 class Post(object):
     def __init__(self, data):
+        #required data
         self.guid = data['guid'] #meme id
         self.pubid = data['pubid'] #post id
         self.type = data['type']
-        self.caption = data['caption']
-        self.content = data['content']
-        self.comment = data.get('comment')
-        self.url = data['url']
         self.timestamp = data['timestamp']
-        self.repost_count = data['repost_count']
         
-        #if empty then not a repost
-        self.origin_guid = data.get('origin_guid')
+        #optional data
+        self.repost_count = data.get('repost_count') #absent only in comments
+        self.url = data.get('url') #absent only in comments
+        self.content = data.get('content') #absent only in comments and reposts
+        self.caption = data.get('caption')
+        self.comment = data.get('comment')        
+        self.origin_guid = data.get('origin_guid') #if empty then not a repost
         self.origin_pubid = data.get('origin_pubid')
         self.via_guid = data.get('via_guid')
+        
+        self.post_repository = PostRepository()
         
         if not self.origin_guid:
             self.is_original = True
         else:
             self.is_original = False
     
+    def activity(self, count=10):
+        return self.post_repository.activity(self.guid, self.pubid, count)
     
     def __repr__(self):
         return u'Post[guid=%s, pubid=%s, type=%s]' % (self.guid, self.pubid, self.type)
