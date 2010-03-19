@@ -21,6 +21,14 @@ class MemeRepository(Repository):
         if meme:
             return meme
         raise MemeNotFound("Meme %s was not found!" % name)
+
+    def multiple(self, *guids):
+        guids = ["'%s'" % guid for guid in guids]
+        query = 'SELECT * FROM meme.info WHERE owner_guid in (%s)' % ','.join(guids)
+        memes = self._yql_query(query)
+        if memes:
+            return memes
+        raise MemeNotFound("No Meme found in you guid list")
     
     def following(self, guid, count):
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
