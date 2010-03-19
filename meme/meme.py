@@ -1,5 +1,8 @@
 import yql
 
+API_KEY = 'dj0yJmk9RW1TaFkzN1NNcVFMJmQ9WVdrOVJXRlZjbnBpTm1zbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1hYg--' # gc
+SECRET = 'd09162c0f9d12b3845668301a2776bec8fa5bd23' # gc
+
 class MemeNotFound(Exception):
     """Raised when Meme is not found."""
 
@@ -7,6 +10,15 @@ class Repository(object):
     def __init__(self):
         self.yql = yql.Public()
         self.yql_private = None
+    
+    #TODO
+    # def _private_yql_query(self, query):
+    #    if not self.yql_private:
+    #        self.yql_private = yql.ThreeLegged(API_KEY, SECRET)
+    #        request_token, auth_url = self.yql_private.get_token_and_auth_url()
+    #        access_token = self.yql_private.get_access_token(request_token, verifier)
+            
+    #    self.yql_private.execute(query, token=access_token)
 
 class MemeRepository(Repository):
     
@@ -50,6 +62,10 @@ class PostRepository(Repository):
         query = 'SELECT * FROM meme.popular(%s) WHERE locale="%s"' % (count, locale)
         return self._yql_query(query)
     
+    def searchByUser(self, user, limit=100):
+        query = 'SELECT * FROM meme.posts WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s") LIMIT %d' % (user, limit)
+        return self._yql_query(query)
+
     def search(self, query, count):
         query = 'SELECT * FROM meme.search(%d) WHERE query="%s"' % (count, query)
         return self._yql_query(query)
