@@ -1,4 +1,5 @@
 import yql
+from copy import deepcopy
 
 API_KEY = 'dj0yJmk9RW1TaFkzN1NNcVFMJmQ9WVdrOVJXRlZjbnBpTm1zbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1hYg--' # gc
 SECRET = 'd09162c0f9d12b3845668301a2776bec8fa5bd23' # gc
@@ -52,6 +53,11 @@ class MemeRepository(Repository):
         return self._yql_query(query)
     
 class PostRepository(Repository):
+    
+    def __init__(self):
+        super(PostRepository, self).__init__()
+        self.meme_repository = MemeRepository()
+    
     def _yql_query(self, query):
         result = self.yql.execute(query)
         if result.count == 1:
@@ -76,7 +82,26 @@ class PostRepository(Repository):
     
     def activity(self, guid, pubid, count):
         query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
-        return self._yql_query(query)      
+        return self._yql_query(query)
+
+    def fillMemes(self, posts):
+        posts = deepcopy(posts)
+        guids = set()
+        for post in posts:
+            guids.add(post.guid)
+            if post.origin_guid:
+                guids.add(post.origin_guid)
+            if post.via_guid:
+                guids.add(post.via_guid)
+        memes = self.meme_repository.multiple(*guids)
+        memes_map = {}
+        for meme in memes:
+            memes_map[meme.guid] = meme
+        for post in posts:
+            post.meme = memes_map.get(post.guid)
+            post.origin_meme = memes_map.get(post.origin_guid)
+            post.via_meme = memes_map.get(post.via_guid)
+        return posts
 
 
 
@@ -101,8 +126,12 @@ class Meme(object):
     def followers(self, count=10):
         return self.meme_repository.followers(self.guid, count)
     
-    def posts(self, count=10):
-        return self.post_repository.posts(self.guid, count)
+    def posts(self, count=10, filled=False):
+        posts = self.post_repository.posts(self.guid, count)
+        if not filled:
+            return posts
+        else:
+            return self.post_repository.fillMemes(posts)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
@@ -124,6 +153,11 @@ class Post(object):
         self.origin_guid = data.get('origin_guid') #if empty then not a repost
         self.origin_pubid = data.get('origin_pubid')
         self.via_guid = data.get('via_guid')
+
+        #filled memes - only if provided in data dict
+        self.meme = data.get('meme')
+        self.origin_meme = data.get('origin_meme')
+        self.via_meme = data.get('via_meme')
         
         self.post_repository = PostRepository()
         
