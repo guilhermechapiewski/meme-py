@@ -52,6 +52,11 @@ class MemeRepository(Repository):
         return self._yql_query(query)
     
 class PostRepository(Repository):
+
+    def __init__(self):
+        super(PostRepository, self).__init__()
+        self.meme_repository = MemeRepository()
+
     def _yql_query(self, query):
         result = self.yql.execute(query)
         if result.count == 1:
@@ -76,7 +81,15 @@ class PostRepository(Repository):
     
     def activity(self, guid, pubid, count):
         query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
-        return self._yql_query(query)      
+        return self._yql_query(query)
+
+    def fillMemes(self, posts):
+        guids = set()
+        for post in posts:
+            guids.add(post.guid)
+            guids.add(post.origin_guid) if post.origin_guid is not None
+            guids.add(post.via_guid) if post.via_guid is not None
+        memes = self.meme_repository.multiple(*guids)
 
 
 

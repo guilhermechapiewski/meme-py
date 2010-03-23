@@ -25,4 +25,3 @@ class Meme(object):
         @staticmethod
         def activity(guid, pubid, count=10):
             return Meme.Posts.post_repository.activity(guid, pubid, count)
-
