@@ -13,6 +13,16 @@ class MemeApiTest(unittest.TestCase):
         Meme.meme_repository = meme_reporitory_mock
         
         assert Meme.get('some_name') == 'ok'
+    
+    def test_should_search_memes(self):
+        meme_repository_mock = Mock()
+        when(meme_repository_mock).search('a query', 10).thenReturn(['search_result1'])
+        when(meme_repository_mock).search('a query', 40).thenReturn(['search_result2'])
+
+        Meme.meme_repository = meme_repository_mock
+
+        assert Meme.search('a query') == ['search_result1']
+        assert Meme.search('a query', count=40) == ['search_result2']
 
 class MemePostsApiTest(unittest.TestCase):
     
