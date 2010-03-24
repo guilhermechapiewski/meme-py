@@ -109,7 +109,13 @@ class PostRepository(Repository):
             post.origin_meme = memes_map.get(post.origin_guid)
             post.via_meme = memes_map.get(post.via_guid)
         return posts
-
+    
+    def topPosts(self, name, count, media):
+        #The most reposted original posts from that user
+        if media:
+             media = " type:%s" % media
+        query = "from:%s sort:reposts%s" % (name, media)
+        return self.search(query, count)
 
 
 class Meme(object):
@@ -145,6 +151,9 @@ class Meme(object):
             return posts
         else:
             return self.post_repository.fillMemes(posts)
+    
+    def topPosts(self, count=10, media=""):
+        return self.post_repository.topPosts(self.name, count, media)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
@@ -184,4 +193,4 @@ class Post(object):
     
     
     def __repr__(self):
-        return u'Post[guid=%s, pubid=%s, type=%s]' % (self.guid, self.pubid, self.type)
+        return u'Post[guid=%s, pubid=%s, type=%s, reposts=%s]' % (self.guid, self.pubid, self.type, self.repost_count)
