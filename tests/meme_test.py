@@ -203,6 +203,30 @@ class PostRepositoryTest(unittest.TestCase):
         assert len(posts) == 2
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
+
+    def test_should_get_meme_posts_by_user(self):
+        yql_mock = Mock()
+        yql_query = query = 'SELECT * FROM meme.posts(2) WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "foomeme")'
+        query_result = Mock()
+        query_result.rows = []
+        query_result.rows.append({'guid':'fooguid', 'pubid':'123', 
+                'type':'post', 'caption':'blah', 'content':'blah', 
+                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
+                'timestamp':'1234567890', 'repost_count':'12345'})
+        query_result.rows.append({'guid':'fooguid', 'pubid':'456', 
+                'type':'post', 'caption':'blah', 'content':'blah', 
+                'comment':'blah', 'url':'http://meme.yahoo.com/p/456', 
+                'timestamp':'1234567890', 'repost_count':'12345'})
+        query_result.count = 2
+        when(yql_mock).execute(yql_query).thenReturn(query_result)
+
+        repository = PostRepository()
+        repository.yql = yql_mock
+
+        posts = repository.postsByUser('foomeme', 2)
+        assert len(posts) == 2
+        assert posts[0].guid == 'fooguid'
+        assert posts[1].guid == 'fooguid'
         
         
     def test_should_get_activity_around_post(self):
