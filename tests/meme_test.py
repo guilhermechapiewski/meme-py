@@ -46,7 +46,8 @@ class MemeRepositoryTest(unittest.TestCase):
                 
         meme = repository.following(owner_guid, 1)
     
-        assert meme.guid == '123'
+        assert len(meme) == 1
+        assert meme[0].guid == '123'
 
         
         yql_query_following = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (2, owner_guid)
@@ -71,7 +72,6 @@ class MemeRepositoryTest(unittest.TestCase):
         memes = repository.following(owner_guid, 2)
     
         assert len(memes) == 2
-        
         assert memes[0].guid == '456'
         assert memes[1].guid == '789'
 
@@ -95,8 +95,9 @@ class MemeRepositoryTest(unittest.TestCase):
         repository.yql = yql_mock
                 
         meme = repository.followers(owner_guid, 1)
-    
-        assert meme.guid == '123'
+        
+        assert len(meme) == 1
+        assert meme[0].guid == '123'
 
 
         yql_query_following =  'SELECT * FROM meme.followers(%d) WHERE owner_guid = "%s"' % (2, owner_guid)
@@ -135,6 +136,31 @@ class MemeRepositoryTest(unittest.TestCase):
         repository.yql = yql_mock
 
         self.assertRaises(MemeNotFound, repository.get, ('some_name',))
+        
+    def test_should_search_memes(self):
+        yql_mock = Mock()
+        yql_query = 'SELECT * FROM meme.people(10) WHERE query="foobar"'
+        query_result = Mock()
+        query_result.rows = { 'guid':'123',
+                              'name':'foobar',
+                              'title':'Foobar 1337',                
+                              'description':'i love testing', 
+                              'url':'http://meme.yahoo.com/foobar/', 
+                              'avatar_url':'http://d.yimg.com/a/i/identity/nopic_96.gif', 
+                              'language':'en', 
+                              'followers': '13', 
+                              }
+        query_result.count = 1
+        when(yql_mock).execute(yql_query).thenReturn(query_result)
+
+        repository = MemeRepository()
+        repository.yql = yql_mock
+
+        memes = repository.search('foobar', 10)
+        assert len(memes) == 1
+        assert memes[0].guid == '123'
+        assert memes[0].title == 'Foobar 1337'
+        assert memes[0].follower_count == '13'
 
 class PostRepositoryTest(unittest.TestCase):
     

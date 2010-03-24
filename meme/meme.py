@@ -26,14 +26,14 @@ class MemeRepository(Repository):
     def _yql_query(self, query):
         result = self.yql.execute(query)
         if result.count == 1:
-            return Meme(result.rows)
+            return [Meme(result.rows)]
         return [Meme(row) for row in result.rows]
     
     def get(self, name):
         query = 'SELECT * FROM meme.info WHERE name = "%s"' % name
         meme = self._yql_query(query)
         if meme:
-            return meme
+            return meme[0]
         raise MemeNotFound("Meme %s was not found!" % name)
 
     def multiple(self, *guids):
@@ -43,6 +43,13 @@ class MemeRepository(Repository):
         if memes:
             return memes
         raise MemeNotFound("No Meme found in you guid list")
+
+    def search(self, query, count):
+        query = 'SELECT * FROM meme.people(%d) WHERE query="%s"' % (count, query)
+        memes = self._yql_query(query)
+        if memes:
+            return memes
+        raise MemeNotFound("No Meme found in your search")
     
     def following(self, guid, count):
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
@@ -125,6 +132,9 @@ class Meme(object):
     
     def followers(self, count=10):
         return self.meme_repository.followers(self.guid, count)
+    
+    def search(self, query, count=10):
+        return self.meme_repository.search(query, count)
     
     def posts(self, count=10, filled=False, name=None):
         if not name:
