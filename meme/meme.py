@@ -67,10 +67,6 @@ class PostRepository(Repository):
     def popular(self, locale, count):
         query = 'SELECT * FROM meme.popular(%s) WHERE locale="%s"' % (count, locale)
         return self._yql_query(query)
-    
-    def searchByUser(self, user, limit=100):
-        query = 'SELECT * FROM meme.posts WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s") LIMIT %d' % (user, limit)
-        return self._yql_query(query)
 
     def search(self, query, count):
         query = 'SELECT * FROM meme.search(%d) WHERE query="%s"' % (count, query)
@@ -78,6 +74,10 @@ class PostRepository(Repository):
     
     def posts(self, guid, count):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, guid)
+        return self._yql_query(query)
+    
+    def postsByUser(self, name, count):
+        query = 'SELECT * FROM meme.posts WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s") LIMIT %d' % (name, count)
         return self._yql_query(query)
     
     def activity(self, guid, pubid, count):
@@ -126,8 +126,11 @@ class Meme(object):
     def followers(self, count=10):
         return self.meme_repository.followers(self.guid, count)
     
-    def posts(self, count=10, filled=False):
-        posts = self.post_repository.posts(self.guid, count)
+    def posts(self, count=10, filled=False, name=None):
+        if not name:
+            posts = self.post_repository.posts(self.guid, count)
+        else:
+            posts = self.post_repository.postsByName(name, count)
         if not filled:
             return posts
         else:
@@ -168,6 +171,7 @@ class Post(object):
     
     def activity(self, count=10):
         return self.post_repository.activity(self.guid, self.pubid, count)
+    
     
     def __repr__(self):
         return u'Post[guid=%s, pubid=%s, type=%s]' % (self.guid, self.pubid, self.type)
