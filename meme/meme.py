@@ -152,8 +152,8 @@ class Meme(object):
         else:
             return self.post_repository.fillMemes(posts)
     
-    def topPosts(self, count=10, media=""):
-        return self.post_repository.topPosts(self.name, count, media)
+    def topPosts(self, name=self.name, count=10, media=""):
+        return self.post_repository.topPosts(name, count, media)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
