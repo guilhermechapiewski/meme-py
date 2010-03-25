@@ -26,14 +26,14 @@ class MemeRepository(Repository):
     def _yql_query(self, query):
         result = self.yql.execute(query)
         if result.count == 1:
-            return Meme(result.rows)
+            return [Meme(result.rows)]
         return [Meme(row) for row in result.rows]
     
     def get(self, name):
         query = 'SELECT * FROM meme.info WHERE name = "%s"' % name
         meme = self._yql_query(query)
         if meme:
-            return meme
+            return meme[0]
         raise MemeNotFound("Meme %s was not found!" % name)
 
     def multiple(self, *guids):
@@ -43,6 +43,13 @@ class MemeRepository(Repository):
         if memes:
             return memes
         raise MemeNotFound("No Meme found in you guid list")
+
+    def search(self, query, count):
+        query = 'SELECT * FROM meme.people(%d) WHERE query="%s"' % (count, query)
+        memes = self._yql_query(query)
+        if memes:
+            return memes
+        raise MemeNotFound("No Meme found in your search")
     
     def following(self, guid, count):
         query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (count, guid)
@@ -73,10 +80,6 @@ class PostRepository(Repository):
     def popular(self, locale, count):
         query = 'SELECT * FROM meme.popular(%s) WHERE locale="%s"' % (count, locale)
         return self._yql_query(query)
-    
-    def searchByUser(self, user, limit=100):
-        query = 'SELECT * FROM meme.posts WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s") LIMIT %d' % (user, limit)
-        return self._yql_query(query)
 
     def search(self, query, count):
         query = 'SELECT * FROM meme.search(%d) WHERE query="%s"' % (count, query)
@@ -85,6 +88,10 @@ class PostRepository(Repository):
     def posts(self, guid, count, filled=False):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, guid)
         return self._yql_query_proxy(query, filled)
+    
+    def postsByUser(self, name, count):
+        query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s")' % (count, name)
+        return self._yql_query(query)
     
     def activity(self, guid, pubid, count):
         query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
@@ -108,7 +115,13 @@ class PostRepository(Repository):
             post.origin_meme = memes_map.get(post.origin_guid)
             post.via_meme = memes_map.get(post.via_guid)
         return posts
-
+    
+    def topPosts(self, name, count, media):
+        #The most reposted original posts from that user
+        if media:
+             media = " type:%s" % media
+        query = "from:%s sort:reposts%s" % (name, media)
+        return self.search(query, count)
 
 
 class Meme(object):
@@ -132,12 +145,23 @@ class Meme(object):
     def followers(self, count=10):
         return self.meme_repository.followers(self.guid, count)
     
-    def posts(self, count=10, filled=False):
-        posts = self.post_repository.posts(self.guid, count)
+    def search(self, query, count=10):
+        return self.meme_repository.search(query, count)
+    
+    def posts(self, count=10, filled=False, name=None):
+        if not name:
+            posts = self.post_repository.posts(self.guid, count)
+        else:
+            posts = self.post_repository.postsByName(name, count)
         if not filled:
             return posts
         else:
             return self.post_repository.fillMemes(posts)
+    
+    def topPosts(self, name="", count=10, media=""):
+        if self.name and not name:
+            name = self.name
+        return self.post_repository.topPosts(name, count, media)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
@@ -175,5 +199,6 @@ class Post(object):
     def activity(self, count=10):
         return self.post_repository.activity(self.guid, self.pubid, count)
     
+    
     def __repr__(self):
-        return u'Post[guid=%s, pubid=%s, type=%s]' % (self.guid, self.pubid, self.type)
+        return u'Post[guid=%s, pubid=%s, type=%s, reposts=%s]' % (self.guid, self.pubid, self.type, self.repost_count)

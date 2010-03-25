@@ -8,7 +8,7 @@ print Meme.Posts.popular()
 print '========== Popular memes from Brazil =========='
 print Meme.Posts.popular(locale='pt')
 
-print '========== Sample search =========='
+print '========== Sample post search =========='
 posts = Meme.Posts.search('meme rocks')
 print posts
 
@@ -18,26 +18,37 @@ for post in posts:
     print 'Caption: %s' % post.caption
     print '----------------------------------------------'
 
-print '========== Get guilherme_chapiewski Meme =========='
-meme = Meme.get(name='guilherme_chapiewski')
+print '========== Sample meme search =========='
+memes = Meme.search('designer')
+print memes
+
+print '---------- Results for "designer" ----------'
+for meme in memes:
+    print 'Name: %s' % meme.name
+    print 'Title: %s' % meme.title
+    print 'Description: %s' % meme.description
+    print '----------------------------------------------'
+
+print '========== Get gchapiewski Meme =========='
+meme = Meme.get(name='gchapiewski')
 print meme
 print meme.title
 print meme.description 
 print meme.url
 
-print '========== Memes that guilherme_chapiewski is following =========='
+print '========== Memes that gchapiewski is following =========='
 print meme.following()
 
-print '========== 50 Memes that guilherme_chapiewski is following =========='
+print '========== 50 Memes that gchapiewski is following =========='
 print meme.following(count=50)
 
-print '========== Memes following guilherme_chapiewski Meme =========='
+print '========== Memes following gchapiewski Meme =========='
 print meme.followers()
 
-print '========== 50 Memes following guilherme_chapiewski Meme =========='
+print '========== 50 Memes following gchapiewski Meme =========='
 print meme.followers(count=50)
 
-print '========== Posts from guilherme_chapiewski Meme =========='
+print '========== Posts from gchapiewski Meme =========='
 gcposts = meme.posts()
 print gcposts
 print '---------- Results  ----------'
@@ -47,7 +58,7 @@ for post in gcposts:
     print 'Original: %s' % post.is_original
     print '----------------------------------------------'
 
-print '========== The latest post from guilherme_chapiewski Meme =========='
+print '========== The latest post from gchapiewski Meme =========='
 latest_post = gcposts[0]
 print '---------- Details  ----------'
 print 'Type: %s' % post.type
