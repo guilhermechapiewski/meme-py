@@ -158,7 +158,9 @@ class Meme(object):
         else:
             return self.post_repository.fillMemes(posts)
     
-    def topPosts(self, name=self.name, count=10, media=""):
+    def topPosts(self, name="", count=10, media=""):
+        if self.name and not name:
+            name = self.name
         return self.post_repository.topPosts(name, count, media)
         
     def __repr__(self):
