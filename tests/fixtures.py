@@ -16,6 +16,11 @@ memes = {
               'url':'http://meme.yahoo.com/danny',
               'avatar_url':'http://img.yahoo.com/avatar/123.jpg', 
               'language':'pt', 'followers':20},
+    'fred': {'guid':'024', 'name':'fred', 
+             'title':'Search Fred', 'description':'Meme description', 
+             'url':'http://meme.yahoo.com/fred',
+             'avatar_url':'http://img.yahoo.com/avatar/123.jpg', 
+             'language':'pt', 'followers':20},
     }
 
 posts = {
