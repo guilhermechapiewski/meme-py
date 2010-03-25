@@ -11,15 +11,18 @@ class MemeRepositoryTest(unittest.TestCase):
         self.meme_repository = MemeRepository()
         self.yql_mock = Mock()
         self.meme_repository.yql = self.yql_mock
+        
         self.query_result = Mock()
         self.query_result.rows = fixtures.get_meme('john')
         self.query_result.count = 1
+        
         self.query_following_result = Mock()
         self.query_following_result.rows = [
             fixtures.get_meme('mike'),
             fixtures.get_meme('danny'),
             ]
         self.query_following_result.count = 2
+        
         self.search_query_result = Mock()
         self.search_query_result.rows = fixtures.get_meme('fred')
         self.search_query_result.count = 1
@@ -96,26 +99,32 @@ class PostRepositoryTest(unittest.TestCase):
         self.meme_repository = MemeRepository()
         self.post_repository = PostRepository()
         self.yql_mock = Mock()
-        self.query_result = Mock()
-        self.query_result.rows = [
-            
+        self.meme_repository.yql = self.yql_mock
+        self.post_repository.yql = self.yql_mock
+        
+        self.multiple_result = Mock()
+        self.multiple_result.rows = [
+            fixtures.get_post('complete_post_1'),
+            fixtures.get_post('complete_post_2'),
             ]
+        self.multiple_result.count = 2
+        
+        self.single_result = Mock()
+        self.single_result.rows = [
+            fixtures.get_post('complete_post_1'),
+            ]
+        self.single_result.count = 2
+        
+        self.activity_result = Mock()
+        self.activity_result.rows = [
+            fixtures.get_post('repost_1'),
+            fixtures.get_post('comment_1'),
+            ]
+        self.activity_result.count = 2
     
     def test_should_get_popular_posts_by_language(self):
         yql_query = 'SELECT * FROM meme.popular(2) WHERE locale="pt"'
-        self.query_result.rows = []
-        self.query_result.rows.append({'guid':'123', 'pubid':'123', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
-                'timestamp':'1234567890', 'repost_count':'12345'})
-        self.query_result.rows.append({'guid':'456', 'pubid':'456', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/456', 
-                'timestamp':'1234567890', 'repost_count':'12345'})
-        self.query_result.count = 2
-        when(self.yql_mock).execute(yql_query).thenReturn(self.query_result)
-
-        self.post_repository.yql = self.yql_mock
+        when(self.yql_mock).execute(yql_query).thenReturn(self.multiple_result)
 
         posts = self.post_repository.popular('pt', 2)
         assert len(posts) == 2
@@ -123,102 +132,39 @@ class PostRepositoryTest(unittest.TestCase):
         assert posts[1].guid == '456'
 
     def test_should_search_posts(self):
-        yql_mock = Mock()
         yql_query = 'SELECT * FROM meme.search(10) WHERE query="a sample query"'
-        query_result = Mock()
-        query_result.rows = {'guid':'123', 'pubid':'123', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
-                'timestamp':'1234567890', 'repost_count':'12345'}
-        query_result.count = 1
-        when(yql_mock).execute(yql_query).thenReturn(query_result)
+        when(self.yql_mock).execute(yql_query).thenReturn(self.single_result)
 
-        repository = PostRepository()
-        repository.yql = yql_mock
-
-        posts = repository.search('a sample query', 10)
+        posts = self.post_repository.search('a sample query', 10)
         assert len(posts) == 1
         assert posts[0].guid == '123'
         
     def test_should_get_meme_posts(self):
-        yql_mock = Mock()
         yql_query = 'SELECT * FROM meme.posts(2) WHERE owner_guid="foo123bar"'
-        query_result = Mock()
-        query_result.rows = []
-        query_result.rows.append({'guid':'123', 'pubid':'123', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
-                'timestamp':'1234567890', 'repost_count':'12345'})
-        query_result.rows.append({'guid':'456', 'pubid':'456', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/456', 
-                'timestamp':'1234567890', 'repost_count':'12345'})
-        query_result.count = 2
-        when(yql_mock).execute(yql_query).thenReturn(query_result)
+        when(self.yql_mock).execute(yql_query).thenReturn(self.multiple_result)
 
-        repository = PostRepository()
-        repository.yql = yql_mock
-
-        posts = repository.posts('foo123bar', 2)
+        posts = self.post_repository.posts('foo123bar', 2)
         assert len(posts) == 2
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
 
     def test_should_get_meme_posts_by_user(self):
-        yql_mock = Mock()
         yql_query = query = 'SELECT * FROM meme.posts(2) WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "foomeme")'
-        query_result = Mock()
-        query_result.rows = []
-        query_result.rows.append({'guid':'fooguid', 'pubid':'123', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
-                'timestamp':'1234567890', 'repost_count':'12345'})
-        query_result.rows.append({'guid':'fooguid', 'pubid':'456', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/456', 
-                'timestamp':'1234567890', 'repost_count':'12345'})
-        query_result.count = 2
-        when(yql_mock).execute(yql_query).thenReturn(query_result)
+        when(self.yql_mock).execute(yql_query).thenReturn(self.multiple_result)
 
-        repository = PostRepository()
-        repository.yql = yql_mock
-
-        posts = repository.postsByUser('foomeme', 2)
+        posts = self.post_repository.postsByUser('foomeme', 2)
         assert len(posts) == 2
-        assert posts[0].guid == 'fooguid'
-        assert posts[1].guid == 'fooguid'
+        assert posts[0].guid == '123'
+        assert posts[1].guid == '456'
         
         
     def test_should_get_activity_around_post(self):
         #activity means reposts + comments
-        data = {'guid':'123', 'pubid':'456', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
-                'timestamp':'1234567890', 'repost_count':'12345'}                
-        post = Post(data)
-        
-        yql_mock = Mock()
-        
-        
-        activity_result = Mock()
-        activity_result.rows = []
-        activity_result.rows.append({'guid':'123', 'pubid':'123', 
-                'type':'repost', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
-                'timestamp':'1234567890', 'repost_count':'12345'})
-        activity_result.rows.append({'guid':'456', 'pubid':'456', 
-                'type':'comment', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/456', 
-                'timestamp':'1234567890', 'repost_count':'12345'})
         
         yql_query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (2, '123', '456')
+        when(self.yql_mock).execute(yql_query).thenReturn(self.activity_result)
         
-        when(yql_mock).execute(yql_query).thenReturn(activity_result)
-        
-        repository = PostRepository()
-        repository.yql = yql_mock
-        
-        activity = repository.activity('123', '456', 2)
+        activity = self.post_repository.activity('123', '456', 2)
         assert len(activity) == 2
         
         assert activity[0].type == 'repost'
