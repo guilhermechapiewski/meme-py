@@ -12,17 +12,7 @@ class MemeApiTest(unittest.TestCase):
         
         Meme.meme_repository = meme_reporitory_mock
         
-        assert Meme.get('some_name') == 'ok'
-    
-    def test_should_search_memes(self):
-        meme_repository_mock = Mock()
-        when(meme_repository_mock).search('a query', 10).thenReturn(['search_result1'])
-        when(meme_repository_mock).search('a query', 40).thenReturn(['search_result2'])
-
-        Meme.meme_repository = meme_repository_mock
-
-        assert Meme.search('a query') == ['search_result1']
-        assert Meme.search('a query', count=40) == ['search_result2']
+        assert Meme.get(name='some_name') == 'ok'
 
 class MemePostsApiTest(unittest.TestCase):
     
@@ -52,10 +42,20 @@ class MemePostsApiTest(unittest.TestCase):
     
     def test_should_get_meme_posts(self):
         post_repository_mock = Mock()
-        when(post_repository_mock).posts('foo', 10).thenReturn(['posts_from_foo1'])
-        when(post_repository_mock).posts('foo', 33).thenReturn(['posts_from_foo2'])
+        when(post_repository_mock).posts('foo', 10, False).thenReturn(['posts_from_foo1'])
+        when(post_repository_mock).posts('foo', 33, False).thenReturn(['posts_from_foo2'])
   
         Meme.Posts.post_repository = post_repository_mock
         
         assert Meme.Posts.posts('foo') == ['posts_from_foo1']
         assert Meme.Posts.posts(guid='foo', count=33) == ['posts_from_foo2']
+
+    def test_should_get_meme_filled_posts(self):
+        post_repository_mock = Mock()
+        when(post_repository_mock).posts('foo', 10, False).thenReturn(['raw_posts_from_foo'])
+        when(post_repository_mock).posts('foo', 10, True).thenReturn(['filled_posts_from_foo'])
+
+        Meme.Posts.post_repository = post_repository_mock
+
+        assert Meme.Posts.posts('foo', 10) == ['raw_posts_from_foo']
+        assert Meme.Posts.posts('foo', 10, True) == ['filled_posts_from_foo']

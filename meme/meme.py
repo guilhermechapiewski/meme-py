@@ -60,16 +60,22 @@ class MemeRepository(Repository):
         return self._yql_query(query)
     
 class PostRepository(Repository):
-    
+
     def __init__(self):
         super(PostRepository, self).__init__()
         self.meme_repository = MemeRepository()
-    
+
     def _yql_query(self, query):
         result = self.yql.execute(query)
         if result.count == 1:
             return [Post(result.rows)]
         return [Post(row) for row in result.rows]
+
+    def _yql_query_proxy(self, query, filled=False):
+        posts = self._yql_query(query)
+        if filled:
+            return self.fill_memes(posts)
+        return posts
 
     def popular(self, locale, count):
         query = 'SELECT * FROM meme.popular(%s) WHERE locale="%s"' % (count, locale)
@@ -79,9 +85,9 @@ class PostRepository(Repository):
         query = 'SELECT * FROM meme.search(%d) WHERE query="%s"' % (count, query)
         return self._yql_query(query)
     
-    def posts(self, guid, count):
+    def posts(self, guid, count, filled=False):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, guid)
-        return self._yql_query(query)
+        return self._yql_query_proxy(query, filled)
     
     def postsByUser(self, name, count):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s")' % (count, name)
@@ -91,7 +97,7 @@ class PostRepository(Repository):
         query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
         return self._yql_query(query)
 
-    def fillMemes(self, posts):
+    def fill_memes(self, posts):
         posts = deepcopy(posts)
         guids = set()
         for post in posts:

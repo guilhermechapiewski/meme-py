@@ -23,8 +23,8 @@ class Meme(object):
             return Meme.Posts.post_repository.search(query, count)
         
         @staticmethod
-        def posts(guid, count=10):
-            return Meme.Posts.post_repository.posts(guid, count)
+        def posts(guid, count=10, filled=False):
+            return Meme.Posts.post_repository.posts(guid, count, filled)
         
         @staticmethod
         def postsByUser(name, count=10):
@@ -33,4 +33,3 @@ class Meme(object):
         @staticmethod
         def activity(guid, pubid, count=10):
             return Meme.Posts.post_repository.activity(guid, pubid, count)
-
