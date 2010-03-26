@@ -1,5 +1,11 @@
 from copy import deepcopy
 
+def get_meme(name):
+    return deepcopy(memes[name])
+
+def get_post(pubid):
+    return deepcopy(posts[pubid])
+
 memes = {
     'john': {'guid':'123', 'name':'john',
              'title':'Cool Meme title', 'description':'Meme description', 
@@ -55,10 +61,9 @@ posts = {
                                'type':'post', 'caption':'blah', 'content':'blah',
                                'comment':'blah', 'url':'http://meme.yahoo.com/p/123',
                                'timestamp':'1234567890', 'repost_count':'12345', 'origin_guid':'666foo'},
+    'filled_post_1': {'guid':'123', 'pubid':'123',
+                      'type':'post', 'caption':'blah', 'content':'blah',
+                      'comment':'blah', 'url':'http://meme.yahoo.com/p/123',
+                      'origin_guid': '456','via_guid': '789',
+                      'timestamp':'1234567890', 'repost_count':'12345'},
     }
-
-def get_meme(name):
-    return deepcopy(memes[name])
-
-def get_post(pubid):
-    return deepcopy(posts[pubid])

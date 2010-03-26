@@ -101,6 +101,7 @@ class PostRepositoryTest(unittest.TestCase):
         self.yql_mock = Mock()
         self.meme_repository.yql = self.yql_mock
         self.post_repository.yql = self.yql_mock
+        self.post_repository.meme_repository = self.meme_repository
         
         self.multiple_result = Mock()
         self.multiple_result.rows = [
@@ -121,6 +122,18 @@ class PostRepositoryTest(unittest.TestCase):
             fixtures.get_post('comment_1'),
             ]
         self.activity_result.count = 2
+
+        self.filled_result = Mock()
+        self.filled_result.rows = fixtures.get_post('filled_post_1')
+        self.filled_result.count = 1
+
+        self.filled_memes = Mock()
+        self.filled_memes.rows = [
+            fixtures.get_meme('john'),
+            fixtures.get_meme('mike'),
+            fixtures.get_meme('danny'),
+            ]
+        self.filled_memes.count = 3
     
     def test_should_get_popular_posts_by_language(self):
         yql_query = 'SELECT * FROM meme.popular(2) WHERE locale="pt"'
@@ -147,6 +160,19 @@ class PostRepositoryTest(unittest.TestCase):
         assert len(posts) == 2
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
+
+    def test_should_get_meme_filled_posts(self):
+        yql_query = 'SELECT * FROM meme.posts(1) WHERE owner_guid="123"'
+        when(self.yql_mock).execute(yql_query).thenReturn(self.filled_result)
+        yql_query = "SELECT * FROM meme.info WHERE owner_guid in ('123','789','456')"
+        when(self.yql_mock).execute(yql_query).thenReturn(self.filled_memes)
+
+        posts = self.post_repository.posts('123', 1, filled=True)
+        assert len(posts) == 1
+        assert posts[0].guid == '123'
+        assert posts[0].meme.guid == '123'
+        assert posts[0].via_meme.guid == '789'
+        assert posts[0].origin_meme.guid == '456'
 
     def test_should_get_meme_posts_by_user(self):
         yql_query = query = 'SELECT * FROM meme.posts(2) WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "foomeme")'
