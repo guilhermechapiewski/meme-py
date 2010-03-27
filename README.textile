@@ -12,7 +12,7 @@ h3. From source:
 
 h3. From PyPI (easiest way):
 
-You can also install from "PyPI":http://pypi.python.org/pypi/meme-py/ typing:
+You can also install the latest stable release from "PyPI":http://pypi.python.org/pypi/meme-py/ by typing:
 
 <pre><code>$ sudo easy_install meme-py</code></pre>
 
