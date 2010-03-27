@@ -99,7 +99,7 @@ h3. Contributors
   * "Diogo Baeder":http://github.com/diogobaeder ("@diogobaeder":http://twitter.com/diogobaeder)
   * "Hugo Lopes Tavares":http://github.com/hugobr ("@hltbra":http://twitter.com/hltbra)
   * "Matheus Mendes":http://github.com/bigodines ("@bigodines":http://twitter.com/bigodines)
-  * "Pedro Valente":http://github.com/pedrovalente ("@pedrovalente":http://twitter.com/pedrovalente)
+  * "Pedro Valente":http://github.com/pvalente ("@pedrovalente":http://twitter.com/pedrovalente)
 
 h2. What is Meme?
 
