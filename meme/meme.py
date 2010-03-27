@@ -38,7 +38,7 @@ class MemeRepository(Repository):
 
     def multiple(self, *guids):
         guids = ["'%s'" % guid for guid in guids]
-        query = 'SELECT * FROM meme.info WHERE owner_guid in (%s)' % ','.join(guids)
+        query = 'SELECT * FROM meme.info(%d) WHERE owner_guid in (%s)' % (len(guids), ','.join(guids))
         memes = self._yql_query(query)
         if memes:
             return memes
@@ -156,7 +156,7 @@ class Meme(object):
         if not filled:
             return posts
         else:
-            return self.post_repository.fillMemes(posts)
+            return self.post_repository.fill_memes(posts)
     
     def topPosts(self, name="", count=10, media=""):
         if self.name and not name:

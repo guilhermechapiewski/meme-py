@@ -164,7 +164,7 @@ class PostRepositoryTest(unittest.TestCase):
     def test_should_get_meme_filled_posts(self):
         yql_query = 'SELECT * FROM meme.posts(1) WHERE owner_guid="123"'
         when(self.yql_mock).execute(yql_query).thenReturn(self.filled_result)
-        yql_query = "SELECT * FROM meme.info WHERE owner_guid in ('123','789','456')"
+        yql_query = "SELECT * FROM meme.info(3) WHERE owner_guid in ('123','789','456')"
         when(self.yql_mock).execute(yql_query).thenReturn(self.filled_memes)
 
         posts = self.post_repository.posts('123', 1, filled=True)
