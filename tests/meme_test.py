@@ -102,6 +102,8 @@ class PostRepositoryTest(unittest.TestCase):
         self.meme_repository.yql = self.yql_mock
         self.post_repository.yql = self.yql_mock
         self.post_repository.meme_repository = self.meme_repository
+        self.john = Meme(fixtures.get_meme('john'))
+        self.john.post_repository = self.post_repository
         
         self.multiple_result = Mock()
         self.multiple_result.rows = [
@@ -167,7 +169,7 @@ class PostRepositoryTest(unittest.TestCase):
         yql_query = "SELECT * FROM meme.info(3) WHERE owner_guid in ('123','789','456')"
         when(self.yql_mock).execute(yql_query).thenReturn(self.filled_memes)
 
-        posts = self.post_repository.posts('123', 1, filled=True)
+        posts = self.john.posts(1, filled=True)
         assert len(posts) == 1
         assert posts[0].guid == '123'
         assert posts[0].meme.guid == '123'
