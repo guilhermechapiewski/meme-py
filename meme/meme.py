@@ -1,8 +1,4 @@
 import yql
-from copy import deepcopy
-
-API_KEY = 'dj0yJmk9RW1TaFkzN1NNcVFMJmQ9WVdrOVJXRlZjbnBpTm1zbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD1hYg--' # gc
-SECRET = 'd09162c0f9d12b3845668301a2776bec8fa5bd23' # gc
 
 class MemeNotFound(Exception):
     """Raised when Meme is not found."""
@@ -66,10 +62,6 @@ class PostRepository(Repository):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, owner_guid)
         return self._yql_query(query, filled)
     
-    #def activity(self, guid, pubid, count):
-    #    query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
-    #    return self._yql_query(query)
-    
     def get_most_reposted_by_meme(self, name, media, count):
         search_for_media = ''
         if media:
@@ -77,6 +69,10 @@ class PostRepository(Repository):
         
         query = "from:%s sort:reposts %s" % (name, search_for_media)
         return self.search(query, count)
+    
+    #def activity(self, guid, pubid, count):
+    #    query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
+    #    return self._yql_query(query)
 
 class Meme(object):
     def __init__(self, data=None):
