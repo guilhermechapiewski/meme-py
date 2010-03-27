@@ -188,22 +188,14 @@ class MemeTest(unittest.TestCase):
 class PostTest(unittest.TestCase):
     
     def test_should_return_post_without_optional_fields(self):
-        """
-        optional data is:
-         self.content
-         self.caption
-         self.comment
-         self.origin_guid
-         self.origin_pubid
-         self.via_guid
-         self.url
-        """
         data = {'guid':'123', 'pubid':'123', 
                 'type':'post',
                 'timestamp':'1234567890', 'repost_count':'12345'}
         
         post = Post(data)  
         assert post.guid == '123'
+        
+        # optional data
         assert post.content == None
         assert post.comment == None
         assert post.origin_guid == None
