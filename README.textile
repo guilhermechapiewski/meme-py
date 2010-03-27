@@ -18,7 +18,7 @@ You can also install from "PyPI":http://pypi.python.org/pypi/meme-py/ typing:
 
 h2. How to use?
 
-Check it out some simple and cool examples (for more please check "examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples.py file):
+Check it out some simple and cool examples (for more please check "examples/examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples/examples.py file):
 
 h3. Get popular posts:
 
