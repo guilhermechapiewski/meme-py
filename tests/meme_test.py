@@ -176,28 +176,6 @@ class PostRepositoryTest(unittest.TestCase):
         assert posts[0].via_meme.guid == '789'
         assert posts[0].origin_meme.guid == '456'
 
-    def test_should_get_meme_posts_by_user(self):
-        yql_query = query = 'SELECT * FROM meme.posts(2) WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "foomeme")'
-        when(self.yql_mock).execute(yql_query).thenReturn(self.multiple_result)
-
-        posts = self.post_repository.posts_by_user('foomeme', 2)
-        assert len(posts) == 2
-        assert posts[0].guid == '123'
-        assert posts[1].guid == '456'
-        
-    def test_should_get_activity_around_post(self):
-        #activity means reposts + comments
-        
-        yql_query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (2, '123', '456')
-        when(self.yql_mock).execute(yql_query).thenReturn(self.activity_result)
-        
-        activity = self.post_repository.activity('123', '456', 2)
-        assert len(activity) == 2
-        
-        assert activity[0].type == 'repost'
-        assert activity[1].type == 'comment'
-        
-
 class MemeTest(unittest.TestCase):
     
     def test_should_get_memes_following_a_meme(self):
@@ -220,7 +198,6 @@ class MemeTest(unittest.TestCase):
         
         assert meme.followers(10) == ['meme_followers']
   
-
 class PostTest(unittest.TestCase):
 
     def test_should_return_post_activity(self):
@@ -261,7 +238,6 @@ class PostTest(unittest.TestCase):
         assert post.via_guid == None
         assert post.url == None
         
-    
     def test_should_identify_post_as_original(self):
         #this is an original post
         data = {'guid':'123', 'pubid':'123', 
@@ -279,7 +255,3 @@ class PostTest(unittest.TestCase):
                 'timestamp':'1234567890', 'repost_count':'12345', 'origin_guid':'666foo'}
         
         assert Post(data).is_original == False
-    
-    
-    
-        
