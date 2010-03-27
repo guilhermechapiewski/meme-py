@@ -4,7 +4,7 @@ setup(
     name = "meme-py",
     version = '0.3.0',
     packages = ["meme"],
-    author = "Guilherme Chapiewski",
+    author = "Guilherme Chapiewski and friends",
     author_email = "guilherme.chapiewski@gmail.com",
     description = "Yahoo! Meme (http://meme.yahoo.com) client API.",
     license = "Apache License 2.0",
