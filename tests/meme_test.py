@@ -35,7 +35,6 @@ class MemeRepositoryTest(unittest.TestCase):
         assert meme.guid == '123'
 
     def test_should_get_memes_following_a_meme(self):
-        
         owner_guid = "123"
         #this should be exactly the same query as the 'following' method
         yql_query = 'SELECT * FROM meme.following(%d) WHERE owner_guid = "%s"' % (1, owner_guid)
@@ -55,9 +54,7 @@ class MemeRepositoryTest(unittest.TestCase):
         assert memes[0].guid == '456'
         assert memes[1].guid == '789'
 
-
     def test_should_get_meme_followers(self):
-        
         owner_guid = "123fooGUID"
         yql_query =  'SELECT * FROM meme.followers(%d) WHERE owner_guid = "%s"' % (1, owner_guid)
         when(self.yql_mock).execute(yql_query).thenReturn(self.query_result)
@@ -117,25 +114,6 @@ class PostRepositoryTest(unittest.TestCase):
             fixtures.get_post('complete_post_1'),
             ]
         self.single_result.count = 2
-        
-        self.activity_result = Mock()
-        self.activity_result.rows = [
-            fixtures.get_post('repost_1'),
-            fixtures.get_post('comment_1'),
-            ]
-        self.activity_result.count = 2
-
-        self.filled_result = Mock()
-        self.filled_result.rows = fixtures.get_post('filled_post_1')
-        self.filled_result.count = 1
-
-        self.filled_memes = Mock()
-        self.filled_memes.rows = [
-            fixtures.get_meme('john'),
-            fixtures.get_meme('mike'),
-            fixtures.get_meme('danny'),
-            ]
-        self.filled_memes.count = 3
     
     def test_should_get_popular_posts_by_language(self):
         yql_query = 'SELECT * FROM meme.popular(2) WHERE locale="pt"'
