@@ -5,12 +5,12 @@ class Meme(object):
     
     @staticmethod
     def get(name=None):
-        '''Get a Meme by it's name/user, e.g.: "gchapiewski".'''
+        '''Gets a Meme by it's name/user, e.g.: "gchapiewski".'''
         return Meme.meme_repository.get(name)
 
     @staticmethod
     def search(query, count=10):
-        '''Search for Memes that have the title similar to the search string.'''
+        '''Searches for Memes that have the title similar to the search string.'''
         return Meme.meme_repository.search(query, count)
     
     class Posts(object):
@@ -18,12 +18,12 @@ class Meme(object):
 
         @staticmethod
         def popular(locale='en', count=10):
-            '''Get the popular posts.'''
+            '''Gets the popular posts.'''
             return Meme.Posts.post_repository.popular(locale, count)
         
         @staticmethod
         def search(query, count=10):
-            '''Search for Posts that contains the specified word(s).'''
+            '''Searches for Posts that contains the specified word(s).'''
             return Meme.Posts.post_repository.search(query, count)
         
         @staticmethod
