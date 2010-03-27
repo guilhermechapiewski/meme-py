@@ -2,3 +2,4 @@
 *.pyc
 dist/
 meme_py.egg-info/
+*~

@@ -6,6 +6,10 @@ class Meme(object):
     @staticmethod
     def get(name=None):
         return Meme.meme_repository.get(name)
+
+    @staticmethod
+    def search(query, count=10):
+        return Meme.meme_repository.search(query, count)
     
     class Posts(object):
         post_repository = PostRepository()
@@ -17,3 +21,15 @@ class Meme(object):
         @staticmethod
         def search(query, count=10):
             return Meme.Posts.post_repository.search(query, count)
+        
+        @staticmethod
+        def posts(guid, count=10, filled=False):
+            return Meme.Posts.post_repository.posts(guid, count, filled)
+        
+        @staticmethod
+        def postsByUser(name, count=10):
+            return Meme.Posts.post_repository.postsByUser(name, count)
+        
+        @staticmethod
+        def activity(guid, pubid, count=10):
+            return Meme.Posts.post_repository.activity(guid, pubid, count)
