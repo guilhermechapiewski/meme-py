@@ -80,10 +80,6 @@ class PostRepository(Repository):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, guid)
         return self._yql_query_proxy(query, filled)
     
-    def posts_by_user(self, name, count):
-        query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s")' % (count, name)
-        return self._yql_query(query)
-    
     def activity(self, guid, pubid, count):
         query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
         return self._yql_query(query)

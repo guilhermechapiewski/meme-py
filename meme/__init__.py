@@ -5,10 +5,12 @@ class Meme(object):
     
     @staticmethod
     def get(name=None):
+        '''Get a Meme by it's name/user, e.g.: "gchapiewski".'''
         return Meme.meme_repository.get(name)
 
     @staticmethod
     def search(query, count=10):
+        '''Search for Memes that have the title similar to the search string.'''
         return Meme.meme_repository.search(query, count)
     
     class Posts(object):
@@ -16,20 +18,15 @@ class Meme(object):
 
         @staticmethod
         def popular(locale='en', count=10):
+            '''Get the popular posts.'''
             return Meme.Posts.post_repository.popular(locale, count)
         
         @staticmethod
         def search(query, count=10):
+            '''Search for Posts that contains the specified word(s).'''
             return Meme.Posts.post_repository.search(query, count)
         
         @staticmethod
-        def posts(guid, count=10, filled=False):
-            return Meme.Posts.post_repository.posts(guid, count, filled)
-        
-        @staticmethod
-        def posts_by_user(name, count=10):
-            return Meme.Posts.post_repository.postsByUser(name, count)
-        
-        @staticmethod
         def activity(guid, pubid, count=10):
+            '''Shows the activity of a Post.'''
             return Meme.Posts.post_repository.activity(guid, pubid, count)
