@@ -74,7 +74,6 @@ h3. Contributors
   * "Matheus Mendes":http://github.com/bigodines ("@bigodines":http://twitter.com/bigodines)
   * "Pedro Valente":http://github.com/pedrovalente ("@pedrovalente":http://twitter.com/pedrovalente)
 
-
 h2. What is Meme?
 
 Meme ("http://meme.yahoo.com":http://meme.yahoo.com) is a _light-blogging_ tool - which means that it is not as small and simple as "Twitter":http://twitter.com (micro-blogging) and not as big and full-featured as "Wordpress":http://wordpress.org (standard blogging) - created by "Yahoo!":http://yahoo.com in Brazil.
