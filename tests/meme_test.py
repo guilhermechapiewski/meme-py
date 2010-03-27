@@ -158,23 +158,10 @@ class PostRepositoryTest(unittest.TestCase):
         yql_query = 'SELECT * FROM meme.posts(2) WHERE owner_guid="foo123bar"'
         when(self.yql_mock).execute(yql_query).thenReturn(self.multiple_result)
 
-        posts = self.post_repository.posts('foo123bar', 2)
+        posts = self.post_repository.get_by_meme('foo123bar', 2)
         assert len(posts) == 2
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
-
-    def test_should_get_meme_filled_posts(self):
-        yql_query = 'SELECT * FROM meme.posts(1) WHERE owner_guid="123"'
-        when(self.yql_mock).execute(yql_query).thenReturn(self.filled_result)
-        yql_query = "SELECT * FROM meme.info(3) WHERE owner_guid in ('123','789','456')"
-        when(self.yql_mock).execute(yql_query).thenReturn(self.filled_memes)
-
-        posts = self.john.posts(1, filled=True)
-        assert len(posts) == 1
-        assert posts[0].guid == '123'
-        assert posts[0].meme.guid == '123'
-        assert posts[0].via_meme.guid == '789'
-        assert posts[0].origin_meme.guid == '456'
 
 class MemeTest(unittest.TestCase):
     
@@ -199,31 +186,17 @@ class MemeTest(unittest.TestCase):
         assert meme.followers(10) == ['meme_followers']
   
 class PostTest(unittest.TestCase):
-
-    def test_should_return_post_activity(self):
-        post_repository_mock = Mock()
-        when(post_repository_mock).activity('some_guid', 'some_pubid', 10).thenReturn(['post_activity'])
-        
-        data = {'guid':'some_guid', 'pubid':'some_pubid', 
-                'type':'post', 'caption':'blah', 'content':'blah', 
-                'comment':'blah', 'url':'http://meme.yahoo.com/p/123', 
-                'timestamp':'1234567890', 'repost_count':'12345'}      
-        
-        post = Post(data)
-        post.post_repository = post_repository_mock
-        
-        assert post.activity(10) == ['post_activity']
     
     def test_should_return_post_without_optional_fields(self):
         """
-        #optional data
-        self.content
-        self.caption
-        self.comment
-        self.origin_guid
-        self.origin_pubid
-        self.via_guid
-        self.url
+        optional data is:
+         self.content
+         self.caption
+         self.comment
+         self.origin_guid
+         self.origin_pubid
+         self.via_guid
+         self.url
         """
         data = {'guid':'123', 'pubid':'123', 
                 'type':'post',

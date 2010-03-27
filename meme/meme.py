@@ -60,7 +60,7 @@ class PostRepository(Repository):
     
     def get_by_meme(self, owner_guid, count):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, owner_guid)
-        return self._yql_query(query, filled)
+        return self._yql_query(query)
     
     def get_most_reposted_by_meme(self, name, media, count):
         search_for_media = ''
