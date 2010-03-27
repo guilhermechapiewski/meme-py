@@ -25,8 +25,3 @@ class Meme(object):
         def search(query, count=10):
             '''Searches for Posts that contains the specified word(s).'''
             return Meme.Posts.post_repository.search(query, count)
-        
-        @staticmethod
-        def activity(guid, pubid, count=10):
-            '''Shows the activity of a Post.'''
-            return Meme.Posts.post_repository.activity(guid, pubid, count)

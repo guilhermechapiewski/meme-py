@@ -27,14 +27,6 @@ class MemeRepository(Repository):
             return meme[0]
         raise MemeNotFound("Meme %s was not found!" % name)
 
-    def multiple(self, *guids):
-        guids = ["'%s'" % guid for guid in guids]
-        query = 'SELECT * FROM meme.info(%d) WHERE owner_guid in (%s)' % (len(guids), ','.join(guids))
-        memes = self._yql_query(query)
-        if memes:
-            return memes
-        raise MemeNotFound("No Meme found in you guid list")
-
     def search(self, query, count):
         query = 'SELECT * FROM meme.people(%d) WHERE query="%s"' % (count, query)
         memes = self._yql_query(query)
@@ -62,12 +54,6 @@ class PostRepository(Repository):
             return [Post(result.rows)]
         return [Post(row) for row in result.rows]
 
-    def _yql_query_proxy(self, query, filled=False):
-        posts = self._yql_query(query)
-        if filled:
-            return self.fill_memes(posts)
-        return posts
-
     def popular(self, locale, count):
         query = 'SELECT * FROM meme.popular(%s) WHERE locale="%s"' % (count, locale)
         return self._yql_query(query)
@@ -76,38 +62,20 @@ class PostRepository(Repository):
         query = 'SELECT * FROM meme.search(%d) WHERE query="%s"' % (count, query)
         return self._yql_query(query)
     
-    def posts(self, guid, count, filled=False):
-        query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, guid)
-        return self._yql_query_proxy(query, filled)
+    def get_by_meme(self, owner_guid, count):
+        query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, owner_guid)
+        return self._yql_query(query, filled)
     
-    def activity(self, guid, pubid, count):
-        query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
-        return self._yql_query(query)
-
-    def fill_memes(self, posts):
-        posts = deepcopy(posts)
-        guids = set()
-        for post in posts:
-            guids.add(post.guid)
-            if post.origin_guid:
-                guids.add(post.origin_guid)
-            if post.via_guid:
-                guids.add(post.via_guid)
-        memes = self.meme_repository.multiple(*guids)
-        memes_map = {}
-        for meme in memes:
-            memes_map[meme.guid] = meme
-        for post in posts:
-            post.meme = memes_map.get(post.guid)
-            post.origin_meme = memes_map.get(post.origin_guid)
-            post.via_meme = memes_map.get(post.via_guid)
-        return posts
+    #def activity(self, guid, pubid, count):
+    #    query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
+    #    return self._yql_query(query)
     
-    def top_posts(self, name, count, media):
-        #The most reposted original posts from that user
+    def get_top_reposted_by_meme(self, name, media, count):
+        search_for_media = ''
         if media:
-             media = " type:%s" % media
-        query = "from:%s sort:reposts%s" % (name, media)
+            search_for_media = "type:%s" % media
+        
+        query = "from:%s sort:reposts %s" % (name, search_for_media)
         return self.search(query, count)
 
 class Meme(object):
@@ -134,20 +102,11 @@ class Meme(object):
     def search(self, query, count=10):
         return self.meme_repository.search(query, count)
     
-    def posts(self, count=10, filled=False, name=None):
-        if not name:
-            posts = self.post_repository.posts(self.guid, count)
-        else:
-            posts = self.post_repository.posts_by_name(name, count)
-        if not filled:
-            return posts
-        else:
-            return self.post_repository.fill_memes(posts)
+    def posts(self, count=10):
+        return self.post_repository.get_by_meme(self.guid, count)
     
-    def top_posts(self, name="", count=10, media=""):
-        if self.name and not name:
-            name = self.name
-        return self.post_repository.topPosts(name, count, media)
+    def top_posts(self, media='', count=10):
+        return self.post_repository.get_top_reposted_by_meme(self.name, media, count)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
@@ -182,8 +141,8 @@ class Post(object):
         else:
             self.is_original = False
     
-    def activity(self, count=10):
-        return self.post_repository.activity(self.guid, self.pubid, count)
+    #def activity(self, count=10):
+    #    return self.post_repository.activity(self.guid, self.pubid, count)
     
     def __repr__(self):
         return u'Post[guid=%s, pubid=%s, type=%s, reposts=%s]' % (self.guid, self.pubid, self.type, self.repost_count)
