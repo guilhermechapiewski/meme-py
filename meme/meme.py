@@ -70,7 +70,7 @@ class PostRepository(Repository):
     #    query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
     #    return self._yql_query(query)
     
-    def get_top_reposted_by_meme(self, name, media, count):
+    def get_most_reposted_by_meme(self, name, media, count):
         search_for_media = ''
         if media:
             search_for_media = "type:%s" % media
@@ -105,8 +105,8 @@ class Meme(object):
     def posts(self, count=10):
         return self.post_repository.get_by_meme(self.guid, count)
     
-    def top_posts(self, media='', count=10):
-        return self.post_repository.get_top_reposted_by_meme(self.name, media, count)
+    def most_reposted_posts(self, media='', count=10):
+        return self.post_repository.get_most_reposted_by_meme(self.name, media, count)
         
     def __repr__(self):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
