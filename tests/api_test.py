@@ -7,12 +7,22 @@ from meme import Meme
 class MemeApiTest(unittest.TestCase):
     
     def test_should_get_meme_by_name(self):
-        meme_reporitory_mock = Mock()
-        when(meme_reporitory_mock).get('some_name').thenReturn('ok')
+        meme_repository_mock = Mock()
+        when(meme_repository_mock).get('some_name').thenReturn('ok')
         
-        Meme.meme_repository = meme_reporitory_mock
+        Meme.meme_repository = meme_repository_mock
         
         assert Meme.get(name='some_name') == 'ok'
+    
+    def test_should_search_for_memes(self):
+        meme_repository_mock = Mock()
+        when(meme_repository_mock).search('a query', 10).thenReturn(['search_result1'])
+        when(meme_repository_mock).search('a query', 40).thenReturn(['search_result2'])
+
+        Meme.meme_repository = meme_repository_mock
+
+        assert Meme.search('a query') == ['search_result1']
+        assert Meme.search('a query', count=40) == ['search_result2']
 
 class MemePostsApiTest(unittest.TestCase):
     
@@ -30,7 +40,7 @@ class MemePostsApiTest(unittest.TestCase):
         assert Meme.Posts.popular(count=33) == ['popular_posts3']
         assert Meme.Posts.popular(locale='pt', count=33) == ['popular_posts4']
         
-    def test_should_search_posts(self):
+    def test_should_search_for_posts(self):
         post_repository_mock = Mock()
         when(post_repository_mock).search('a query', 10).thenReturn(['search_result1'])
         when(post_repository_mock).search('a query', 40).thenReturn(['search_result2'])
@@ -39,23 +49,3 @@ class MemePostsApiTest(unittest.TestCase):
 
         assert Meme.Posts.search('a query') == ['search_result1']
         assert Meme.Posts.search('a query', count=40) == ['search_result2']
-    
-    def test_should_get_meme_posts(self):
-        post_repository_mock = Mock()
-        when(post_repository_mock).posts('foo', 10, False).thenReturn(['posts_from_foo1'])
-        when(post_repository_mock).posts('foo', 33, False).thenReturn(['posts_from_foo2'])
-  
-        Meme.Posts.post_repository = post_repository_mock
-        
-        assert Meme.Posts.posts('foo') == ['posts_from_foo1']
-        assert Meme.Posts.posts(guid='foo', count=33) == ['posts_from_foo2']
-
-    def test_should_get_meme_filled_posts(self):
-        post_repository_mock = Mock()
-        when(post_repository_mock).posts('foo', 10, False).thenReturn(['raw_posts_from_foo'])
-        when(post_repository_mock).posts('foo', 10, True).thenReturn(['filled_posts_from_foo'])
-
-        Meme.Posts.post_repository = post_repository_mock
-
-        assert Meme.Posts.posts('foo', 10) == ['raw_posts_from_foo']
-        assert Meme.Posts.posts('foo', 10, True) == ['filled_posts_from_foo']
