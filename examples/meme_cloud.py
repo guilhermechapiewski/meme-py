@@ -1,6 +1,6 @@
-from meme import Meme, PostRepository
 from re import compile
-#from random import shuffle
+
+from meme import Meme, PostRepository
 
 class MemeCloud(object):
     
@@ -10,7 +10,7 @@ class MemeCloud(object):
         self.limit = None
         self.content = ''
         self.blacklist = [
-i#    'about','all','am','an','and','another','any','anybody','anyone','anything','are','because','best','both','by','each','each','et','other',
+#    'about','all','am','an','and','another','any','anybody','anyone','anything','are','because','best','both','by','each','each','et','other',
 #                'either','everybody','everyone','everything','few','from','get','going','good','have','he','her','hers','herself','him','himself','his','i','is',
 #		'it','its','itself','like','little','many','me','mine','more','most','much','myself','neither','no','on','one','nobody',
 #		'none','nothing','one','another','other','others','our','ours','ourselves','several','she','so','some','somebody',
@@ -18,7 +18,7 @@ i#    'about','all','am','an','and','another','any','anybody','anyone','anything
 #		'whatever','which','whichever','who','whoever','whom','whomever','whose','you','your','yours','yourself',
 ]
 
-    def loadMemes(self, user='bigodines', limit=10):
+    def load_memes(self, user='bigodines', limit=10):
         self.user = user
         self.limit = limit
         postRepo = PostRepository()
@@ -47,7 +47,7 @@ i#    'about','all','am','an','and','another','any','anybody','anyone','anything
         sortedlist=[ (backitems[i][1],backitems[i][0]) for i in range(0,len(backitems))]
         return sortedlist
 
-    def showCloud(self, sortedCloud=None):
+    def show(self, sortedCloud=None):
         html = {}
         if sortedCloud:
             higherCount = int(sortedCloud[0][1])
@@ -63,7 +63,6 @@ i#    'about','all','am','an','and','another','any','anybody','anyone','anything
 
 if __name__ == "__main__":
     cloud = MemeCloud()
-    cloud.loadMemes(user='bigodines')
+    cloud.load_memes(user='bigodines')
     cloud.count()
-    print cloud.showCloud(cloud.sort())
-    
+    print cloud.show(cloud.sort())

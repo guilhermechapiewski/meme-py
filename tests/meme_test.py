@@ -180,11 +180,10 @@ class PostRepositoryTest(unittest.TestCase):
         yql_query = query = 'SELECT * FROM meme.posts(2) WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "foomeme")'
         when(self.yql_mock).execute(yql_query).thenReturn(self.multiple_result)
 
-        posts = self.post_repository.postsByUser('foomeme', 2)
+        posts = self.post_repository.posts_by_user('foomeme', 2)
         assert len(posts) == 2
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
-        
         
     def test_should_get_activity_around_post(self):
         #activity means reposts + comments

@@ -27,7 +27,7 @@ class Meme(object):
             return Meme.Posts.post_repository.posts(guid, count, filled)
         
         @staticmethod
-        def postsByUser(name, count=10):
+        def posts_by_user(name, count=10):
             return Meme.Posts.post_repository.postsByUser(name, count)
         
         @staticmethod

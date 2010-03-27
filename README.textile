@@ -90,7 +90,7 @@ Go to the "Issues":http://github.com/guilhermechapiewski/meme-py/issues section 
 
 h2. How to contribute
 
-This API is on an early stage of development and contributors are very welcome :) Go ahead and "fork the project":http://github.com/guilhermechapiewski/meme-py/fork here on Github! I'll be happy to integrate your updates later, just "request pull" when you are done.
+This API is on an early stage of development and contributors are very welcome :) Go ahead and "fork the project":http://github.com/guilhermechapiewski/meme-py/fork here on Github! I'll be happy to integrate your updates later, just "request pull" when you are done. *Please* follow "PEP-8":http://www.python.org/dev/peps/pep-0008/ rules and include unit tests!
 
 If you have further questions, just drop me a message at *guilherme dot chapiewski at gmail dot com*, on Meme ("/guilherme_chapiewski":http://meme.yahoo.com/guilherme_chapiewski/) or on Twitter ("@gchapiewski":http://twitter.com/gchapiewski).
 

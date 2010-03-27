@@ -18,22 +18,20 @@ class simpleTestCase(unittest.TestCase):
     def test_sorted_word_count(self):
         cloud = mc.MemeCloud()
         cloud.content = self.response
-        sortedCloud = cloud.sort()
-        self.assertEqual('fooo', sortedCloud[0][0])
-        self.assertEqual(3, sortedCloud[0][1])
-        self.assertEqual('there', sortedCloud[1][0])
+        sorted_cloud = cloud.sort()
+        self.assertEqual('fooo', sorted_cloud[0][0])
+        self.assertEqual(3, sorted_cloud[0][1])
+        self.assertEqual('there', sorted_cloud[1][0])
 
     # TODO: fix this test
     def test_show_cloud(self):
         cloud = mc.MemeCloud()
         cloud.content = self.response
 
-        sortedCloud = cloud.sort()
-        cloud.showCloud(sortedCloud)
+        sorted_cloud = cloud.sort()
+        cloud.show(sorted_cloud)
 
 if __name__ == '__main__':
-#    unittest.main()
     suite = unittest.TestLoader().loadTestsFromTestCase(simpleTestCase)
 
     unittest.TextTestRunner(verbosity=2).run(suite)
-

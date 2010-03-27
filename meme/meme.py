@@ -11,15 +11,6 @@ class Repository(object):
     def __init__(self):
         self.yql = yql.Public()
         self.yql_private = None
-    
-    #TODO
-    # def _private_yql_query(self, query):
-    #    if not self.yql_private:
-    #        self.yql_private = yql.ThreeLegged(API_KEY, SECRET)
-    #        request_token, auth_url = self.yql_private.get_token_and_auth_url()
-    #        access_token = self.yql_private.get_access_token(request_token, verifier)
-            
-    #    self.yql_private.execute(query, token=access_token)
 
 class MemeRepository(Repository):
     
@@ -89,7 +80,7 @@ class PostRepository(Repository):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, guid)
         return self._yql_query_proxy(query, filled)
     
-    def postsByUser(self, name, count):
+    def posts_by_user(self, name, count):
         query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid in (SELECT guid FROM meme.info WHERE name = "%s")' % (count, name)
         return self._yql_query(query)
     
@@ -116,13 +107,12 @@ class PostRepository(Repository):
             post.via_meme = memes_map.get(post.via_guid)
         return posts
     
-    def topPosts(self, name, count, media):
+    def top_posts(self, name, count, media):
         #The most reposted original posts from that user
         if media:
              media = " type:%s" % media
         query = "from:%s sort:reposts%s" % (name, media)
         return self.search(query, count)
-
 
 class Meme(object):
     def __init__(self, data=None):
@@ -152,13 +142,13 @@ class Meme(object):
         if not name:
             posts = self.post_repository.posts(self.guid, count)
         else:
-            posts = self.post_repository.postsByName(name, count)
+            posts = self.post_repository.posts_by_name(name, count)
         if not filled:
             return posts
         else:
             return self.post_repository.fill_memes(posts)
     
-    def topPosts(self, name="", count=10, media=""):
+    def top_posts(self, name="", count=10, media=""):
         if self.name and not name:
             name = self.name
         return self.post_repository.topPosts(name, count, media)
@@ -198,7 +188,6 @@ class Post(object):
     
     def activity(self, count=10):
         return self.post_repository.activity(self.guid, self.pubid, count)
-    
     
     def __repr__(self):
         return u'Post[guid=%s, pubid=%s, type=%s, reposts=%s]' % (self.guid, self.pubid, self.type, self.repost_count)
