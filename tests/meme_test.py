@@ -7,26 +7,6 @@ import fixtures
 
 class MemeRepositoryTest(unittest.TestCase):
 
-    def setUp(self):
-        self.meme_repository = MemeRepository()
-        self.yql_mock = Mock()
-        self.meme_repository.yql = self.yql_mock
-        
-        self.query_result = Mock()
-        self.query_result.rows = fixtures.get_meme('john')
-        self.query_result.count = 1
-        
-        self.query_following_result = Mock()
-        self.query_following_result.rows = [
-            fixtures.get_meme('mike'),
-            fixtures.get_meme('danny'),
-            ]
-        self.query_following_result.count = 2
-        
-        self.search_query_result = Mock()
-        self.search_query_result.rows = fixtures.get_meme('fred')
-        self.search_query_result.count = 1
-    
     def test_should_get_meme_by_name(self):
         yql_query = 'SELECT * FROM meme.info WHERE name = "some_name"'
         when(self.yql_mock).execute(yql_query).thenReturn(self.query_result)
@@ -74,17 +54,33 @@ class MemeRepositoryTest(unittest.TestCase):
 
     def test_should_raise_meme_not_found_error(self):
         yql_query = 'SELECT * FROM meme.info WHERE name = "some_name"'
-        self.query_result.rows = []
-        self.query_result.count = 0
-        when(self.yql_mock).execute(yql_query).thenReturn(self.query_result)
+        
+        query_result = Mock()
+        query_result.rows = []
+        query_result.count = 0
+        
+        yql_mock = Mock()
+        when(yql_mock).execute(yql_query).thenReturn(query_result)
 
-        self.assertRaises(MemeNotFound, self.meme_repository.get, ('some_name',))
+        meme_repository = MemeRepository()
+        meme_repository.yql = yql_mock
+        
+        self.assertRaises(MemeNotFound, meme_repository.get, ('some_name',))
         
     def test_should_search_memes(self):
-        yql_query = 'SELECT * FROM meme.people(10) WHERE query="foobar"'
-        when(self.yql_mock).execute(yql_query).thenReturn(self.search_query_result)
+        yql_query = 'SELECT * FROM meme.people(1) WHERE query="foobar"'
+        
+        query_result = Mock()
+        query_result.rows = fixtures.get_meme('fred')
+        query_result.count = 1
+        
+        yql_mock = Mock()
+        when(yql_mock).execute(yql_query).thenReturn(query_result)
 
-        memes = self.meme_repository.search('foobar', 10)
+        meme_repository = MemeRepository()
+        meme_repository.yql = yql_mock
+        
+        memes = meme_repository.search('foobar', 1)
         assert len(memes) == 1
         assert memes[0].guid == '024'
         assert memes[0].title == 'Search Fred'
@@ -93,50 +89,51 @@ class MemeRepositoryTest(unittest.TestCase):
 class PostRepositoryTest(unittest.TestCase):
 
     def setUp(self):
-        self.meme_repository = MemeRepository()
-        self.post_repository = PostRepository()
-        self.yql_mock = Mock()
-        self.meme_repository.yql = self.yql_mock
-        self.post_repository.yql = self.yql_mock
-        self.post_repository.meme_repository = self.meme_repository
-        self.john = Meme(fixtures.get_meme('john'))
-        self.john.post_repository = self.post_repository
-        
         self.multiple_result = Mock()
         self.multiple_result.rows = [
             fixtures.get_post('complete_post_1'),
             fixtures.get_post('complete_post_2'),
-            ]
+        ]
         self.multiple_result.count = 2
         
         self.single_result = Mock()
-        self.single_result.rows = [
-            fixtures.get_post('complete_post_1'),
-            ]
+        self.single_result.rows = [fixtures.get_post('complete_post_1'), ]
         self.single_result.count = 2
     
     def test_should_get_popular_posts_by_language(self):
         yql_query = 'SELECT * FROM meme.popular(2) WHERE locale="pt"'
-        when(self.yql_mock).execute(yql_query).thenReturn(self.multiple_result)
+        
+        yql_mock = Mock()
+        when(yql_mock).execute(yql_query).thenReturn(self.multiple_result)
 
-        posts = self.post_repository.popular('pt', 2)
+        post_repository = PostRepository()
+        post_repository.yql = yql_mock
+        posts = post_repository.popular('pt', 2)
         assert len(posts) == 2
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
 
     def test_should_search_posts(self):
-        yql_query = 'SELECT * FROM meme.search(10) WHERE query="a sample query"'
-        when(self.yql_mock).execute(yql_query).thenReturn(self.single_result)
+        yql_query = 'SELECT * FROM meme.search(5) WHERE query="a sample query"'
+        
+        yql_mock = Mock()
+        when(yql_mock).execute(yql_query).thenReturn(self.single_result)
 
-        posts = self.post_repository.search('a sample query', 10)
+        post_repository = PostRepository()
+        post_repository.yql = yql_mock
+        posts = post_repository.search('a sample query', 5)
         assert len(posts) == 1
         assert posts[0].guid == '123'
         
     def test_should_get_meme_posts(self):
         yql_query = 'SELECT * FROM meme.posts(2) WHERE owner_guid="foo123bar"'
-        when(self.yql_mock).execute(yql_query).thenReturn(self.multiple_result)
+        
+        yql_mock = Mock()
+        when(yql_mock).execute(yql_query).thenReturn(self.multiple_result)
 
-        posts = self.post_repository.get_by_meme('foo123bar', 2)
+        post_repository = PostRepository()
+        post_repository.yql = yql_mock
+        posts = post_repository.get_by_meme('foo123bar', 2)
         assert len(posts) == 2
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
