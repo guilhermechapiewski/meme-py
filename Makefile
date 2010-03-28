@@ -24,6 +24,7 @@ compile: clean
 	@python -tt -m compileall tests
 
 test: compile
+	# clean again to remove compiled files
 	@make clean
 	@echo "Starting tests..."
 	@export PYTHONPATH="$PYTHONPATH:`pwd`"

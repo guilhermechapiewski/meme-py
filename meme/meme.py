@@ -24,7 +24,7 @@ class MemeRepository(Repository):
         raise MemeNotFound("Meme %s was not found!" % name)
 
     def search(self, query, count):
-        query = 'SELECT * FROM meme.people(%d) WHERE query="%s"' % (count, query)
+        query = 'SELECT * FROM meme.people(%d) WHERE query = "%s"' % (count, query)
         memes = self._yql_query(query)
         if memes:
             return memes
@@ -51,15 +51,15 @@ class PostRepository(Repository):
         return [Post(row) for row in result.rows]
 
     def popular(self, locale, count):
-        query = 'SELECT * FROM meme.popular(%s) WHERE locale="%s"' % (count, locale)
+        query = 'SELECT * FROM meme.popular(%s) WHERE locale = "%s"' % (count, locale)
         return self._yql_query(query)
 
     def search(self, query, count):
-        query = 'SELECT * FROM meme.search(%d) WHERE query="%s"' % (count, query)
+        query = 'SELECT * FROM meme.search(%d) WHERE query = "%s"' % (count, query)
         return self._yql_query(query)
     
     def get_by_meme(self, owner_guid, count):
-        query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid="%s"' % (count, owner_guid)
+        query = 'SELECT * FROM meme.posts(%d) WHERE owner_guid = "%s"' % (count, owner_guid)
         return self._yql_query(query)
     
     def get_most_reposted_by_meme(self, name, media, count):
