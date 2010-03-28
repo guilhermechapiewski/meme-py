@@ -84,6 +84,20 @@ h3. Get the activity (reposts and comments) around a particular post:
       print '----------------------------------------------'
 </code></pre>
 
+h3. Get the most reposted posts from an user:
+
+<pre><code>  from meme import Meme
+  meme = Meme.get(name='john')
+  posts = meme.most_reposted_posts(media='text', count=2)
+  print '---------- Results  ----------'
+  for post in latest_post.activity():
+      print 'Type: %s' % post.type #repost or commment
+      print 'Comment: %s' % post.comment
+      print 'GUID: %s' % post.guid
+      print 'repost_count: %s' % post.repost_count
+      print '----------------------------------------------'
+</code></pre>
+
 h2. How to report bugs
 
 Go to the "Issues":http://github.com/guilhermechapiewski/meme-py/issues section and please provide as much detail as you can in order to help us solve the problem.
