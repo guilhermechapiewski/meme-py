@@ -18,7 +18,7 @@ You can also install the latest stable release from "PyPI":http://pypi.python.or
 
 h2. How to use?
 
-Check it out some simple and cool examples (for more please check "examples/examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples/examples.py file):
+Check it out some simple and cool examples (for more please check "examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples.py file):
 
 h3. Get popular posts:
 

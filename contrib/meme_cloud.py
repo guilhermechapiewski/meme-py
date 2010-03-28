@@ -1,6 +1,6 @@
 from re import compile
 
-from meme import Meme, PostRepository
+from meme import *
 
 class MemeCloud(object):
     
@@ -21,8 +21,8 @@ class MemeCloud(object):
     def load_memes(self, user='bigodines', limit=10):
         self.user = user
         self.limit = limit
-        postRepo = PostRepository()
-        posts = postRepo.searchByUser(user=self.user,limit=self.limit)
+        meme = Meme.get(user)
+        posts = meme.posts(self.limit)
         p = compile(r'<.*?>')
         self.content =  p.sub(''," ".join([x.content for x in posts ]))
 
