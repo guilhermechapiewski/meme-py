@@ -50,6 +50,10 @@ class PostRepository(Repository):
             return [Post(result.rows)]
         return [Post(row) for row in result.rows]
 
+    def get(self, owner_guid, pubid):
+        query = 'SELECT * FROM meme.posts WHERE owner_guid = "%s" and pubid = "%s"' % (owner_guid, pubid)
+        return self._yql_query(query)
+
     def popular(self, locale, count):
         query = 'SELECT * FROM meme.popular(%s) WHERE locale = "%s"' % (count, locale)
         return self._yql_query(query)
@@ -70,9 +74,9 @@ class PostRepository(Repository):
         query = "from:%s sort:reposts %s" % (name, search_for_media)
         return self.search(query, count)
     
-    #def activity(self, guid, pubid, count):
-    #    query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid="%s" AND pubid="%s"' % (count, guid, pubid)
-    #    return self._yql_query(query)
+    def activity(self, guid, pubid, count):
+        query = 'SELECT * FROM meme.post.info(%d) WHERE owner_guid = "%s" AND pubid = "%s"' % (count, guid, pubid)
+        return self._yql_query(query)
 
 class Meme(object):
     def __init__(self, data=None):
@@ -105,37 +109,38 @@ class Meme(object):
         return u'Meme[guid=%s, name=%s]' % (self.guid, self.name)
 
 class Post(object):
-    def __init__(self, data):
-        #required data
-        self.guid = data['guid'] #meme id
-        self.pubid = data['pubid'] #post id
-        self.type = data['type']
-        self.timestamp = data['timestamp']
+    def __init__(self, data=None):
+        if data:
+            #required data
+            self.guid = data['guid'] #meme id
+            self.pubid = data['pubid'] #post id
+            self.type = data['type']
+            self.timestamp = data['timestamp']
         
-        #optional data
-        self.repost_count = data.get('repost_count') #absent only in comments
-        self.url = data.get('url') #absent only in comments
-        self.content = data.get('content') #absent only in comments and reposts
-        self.caption = data.get('caption')
-        self.comment = data.get('comment')        
-        self.origin_guid = data.get('origin_guid') #if empty then not a repost
-        self.origin_pubid = data.get('origin_pubid')
-        self.via_guid = data.get('via_guid')
+            #optional data
+            self.repost_count = data.get('repost_count') #absent only in comments
+            self.url = data.get('url') #absent only in comments
+            self.content = data.get('content') #absent only in comments and reposts
+            self.caption = data.get('caption')
+            self.comment = data.get('comment')        
+            self.origin_guid = data.get('origin_guid') #if empty then not a repost
+            self.origin_pubid = data.get('origin_pubid')
+            self.via_guid = data.get('via_guid')
 
-        #filled memes - only if provided in data dict
-        self.meme = data.get('meme')
-        self.origin_meme = data.get('origin_meme')
-        self.via_meme = data.get('via_meme')
+            #filled memes - only if provided in data dict
+            self.meme = data.get('meme')
+            self.origin_meme = data.get('origin_meme')
+            self.via_meme = data.get('via_meme')
+        
+            if not self.origin_guid:
+                self.is_original = True
+            else:
+                self.is_original = False
         
         self.post_repository = PostRepository()
-        
-        if not self.origin_guid:
-            self.is_original = True
-        else:
-            self.is_original = False
     
-    #def activity(self, count=10):
-    #    return self.post_repository.activity(self.guid, self.pubid, count)
+    def activity(self, count=10):
+        return self.post_repository.activity(self.guid, self.pubid, count)
     
     def __repr__(self):
         return u'Post[guid=%s, pubid=%s, type=%s, reposts=%s]' % (self.guid, self.pubid, self.type, self.repost_count)

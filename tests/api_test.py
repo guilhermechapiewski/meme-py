@@ -26,6 +26,13 @@ class MemeApiTest(unittest.TestCase):
 
 class MemePostsApiTest(unittest.TestCase):
     
+    def test_should_get_one_post(self):
+        post_repository_mock = Mock()
+        when(post_repository_mock).get('123', '456').thenReturn('post')
+        
+        Meme.Posts.post_repository = post_repository_mock
+        assert Meme.Posts.get(owner_guid='123', pubid='456') == 'post'
+
     def test_should_get_popular_posts(self):
         post_repository_mock = Mock()
         when(post_repository_mock).popular('en', 10).thenReturn(['popular_posts1'])

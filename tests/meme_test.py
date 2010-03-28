@@ -140,6 +140,17 @@ class PostRepositoryTest(unittest.TestCase):
         ]
         self.multiple_query_result.count = 2
     
+    def test_should_get_one_post(self):
+        yql_query = 'SELECT * FROM meme.posts WHERE owner_guid = "123guid" and pubid = "123pubid"'
+        yql_mock = Mock()
+        when(yql_mock).execute(yql_query).thenReturn(self.single_query_result)
+
+        post_repository = PostRepository()
+        post_repository.yql = yql_mock
+        posts = post_repository.get('123guid', '123pubid')
+        assert len(posts) == 1
+        assert posts[0].guid == '123'
+    
     def test_should_get_popular_posts_by_language(self):
         yql_query = 'SELECT * FROM meme.popular(2) WHERE locale = "pt"'
         yql_mock = Mock()
@@ -198,6 +209,20 @@ class PostRepositoryTest(unittest.TestCase):
         assert len(posts) == 2
         assert posts[0].guid == '123'
         assert posts[1].guid == '456'
+    
+    def test_should_get_posts_activity(self):
+        yql_query = 'SELECT * FROM meme.post.info(2) WHERE owner_guid = "123guid" AND pubid = "123pubid"'
+        yql_mock = Mock()
+        when(yql_mock).execute(yql_query).thenReturn(self.multiple_query_result)
+
+        post_repository = PostRepository()
+        post_repository.yql = yql_mock
+        posts = post_repository.activity('123guid', '123pubid', 2)
+        
+        assert len(posts) == 2
+        assert posts[0].guid == '123'
+        assert posts[1].guid == '456'
+
 
 class MemeTest(unittest.TestCase):
     
@@ -286,3 +311,14 @@ class PostTest(unittest.TestCase):
                 'timestamp':'1234567890', 'repost_count':'12345', 'origin_guid':'666foo'}
         
         assert Post(data).is_original == False
+
+    def test_should_get_post_activity(self):
+        post_repository_mock = Mock()
+        when(post_repository_mock).activity('123guid', '123pubid', 5).thenReturn('activity')
+
+        post = Post()
+        post.post_repository = post_repository_mock
+        post.guid = '123guid'
+        post.pubid = '123pubid'
+
+        assert post.activity(count=5) == 'activity'

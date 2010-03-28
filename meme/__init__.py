@@ -15,6 +15,11 @@ class Meme(object):
     
     class Posts(object):
         post_repository = PostRepository()
+        
+        @staticmethod
+        def get(owner_guid, pubid):
+            '''Gets one post.'''
+            return Meme.Posts.post_repository.get(owner_guid, pubid)
 
         @staticmethod
         def popular(locale='en', count=10):

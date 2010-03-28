@@ -73,6 +73,3 @@ for post in latest_post.activity():
   print 'Comment: %s' % post.comment
   print 'GUID: %s' % post.guid
   print '----------------------------------------------'
-
-
-
