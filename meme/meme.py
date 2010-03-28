@@ -95,9 +95,6 @@ class Meme(object):
     def followers(self, count=10):
         return self.meme_repository.followers(self.guid, count)
     
-    def search(self, query, count=10):
-        return self.meme_repository.search(query, count)
-    
     def posts(self, count=10):
         return self.post_repository.get_by_meme(self.guid, count)
     

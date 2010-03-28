@@ -185,28 +185,71 @@ class PostRepositoryTest(unittest.TestCase):
         posts = post_repository.get_by_meme('foo123bar', 1)
         assert len(posts) == 1
         assert posts[0].guid == '123'
+    
+    def test_should_get_most_reposted_posts_of_a_meme(self):
+        yql_query = 'SELECT * FROM meme.search(2) WHERE query = "from:gchapiewski sort:reposts type:text"'
+        yql_mock = Mock()
+        when(yql_mock).execute(yql_query).thenReturn(self.multiple_query_result)
+
+        post_repository = PostRepository()
+        post_repository.yql = yql_mock
+        posts = post_repository.get_most_reposted_by_meme('gchapiewski', 'text', 2)
+        
+        assert len(posts) == 2
+        assert posts[0].guid == '123'
+        assert posts[1].guid == '456'
 
 class MemeTest(unittest.TestCase):
     
     def test_should_get_memes_following_a_meme(self):
         meme_repository_mock = Mock()
-        when(meme_repository_mock).following('some_guid', 10).thenReturn(['memes_following'])
+        when(meme_repository_mock).following('some_guid', 10).thenReturn('memes_following')
         
         meme = Meme()
         meme.meme_repository = meme_repository_mock
         meme.guid = 'some_guid'
         
-        assert meme.following(10) == ['memes_following']
+        assert meme.following(10) == 'memes_following'
         
     def test_should_get_meme_followers(self):
         meme_repository_mock = Mock()
-        when(meme_repository_mock).followers('some_guid', 10).thenReturn(['meme_followers'])
+        when(meme_repository_mock).followers('some_guid', 10).thenReturn('meme_followers')
         
         meme = Meme()
         meme.meme_repository = meme_repository_mock
         meme.guid = 'some_guid'
         
-        assert meme.followers(10) == ['meme_followers']
+        assert meme.followers(10) == 'meme_followers'
+    
+    def test_should_get_meme_posts(self):
+        post_repository_mock = Mock()
+        when(post_repository_mock).get_by_meme('some_guid', 5).thenReturn('meme_posts')
+
+        meme = Meme()
+        meme.post_repository = post_repository_mock
+        meme.guid = 'some_guid'
+
+        assert meme.posts(5) == 'meme_posts'
+
+    def test_should_get_meme_most_reposted_posts(self):
+        post_repository_mock = Mock()
+        when(post_repository_mock).get_most_reposted_by_meme('name', '', 10).thenReturn('meme_posts')
+
+        meme = Meme()
+        meme.post_repository = post_repository_mock
+        meme.name = 'name'
+
+        assert meme.most_reposted_posts() == 'meme_posts'
+
+    def test_should_get_meme_most_reposted_video_posts(self):
+        post_repository_mock = Mock()
+        when(post_repository_mock).get_most_reposted_by_meme('name', 'video', 5).thenReturn('meme_posts')
+
+        meme = Meme()
+        meme.post_repository = post_repository_mock
+        meme.name = 'name'
+
+        assert meme.most_reposted_posts(media='video', count=5) == 'meme_posts'
   
 class PostTest(unittest.TestCase):
     
