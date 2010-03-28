@@ -49,17 +49,17 @@ print '========== 50 Memes following gchapiewski Meme =========='
 print meme.followers(count=50)
 
 print '========== Posts from gchapiewski Meme =========='
-gcposts = meme.posts()
-print gcposts
+posts = meme.posts()
+print posts
 print '---------- Results  ----------'
-for post in gcposts:
+for post in posts:
     print 'Type: %s' % post.type
     print 'Repost count: %s' % post.repost_count
     print 'Original: %s' % post.is_original
     print '----------------------------------------------'
 
 print '========== The latest post from gchapiewski Meme =========='
-latest_post = gcposts[0]
+latest_post = posts[0]
 print '---------- Details  ----------'
 print 'Type: %s' % post.type
 print 'Repost count: %s' % post.repost_count
@@ -69,7 +69,23 @@ print '----------------------------------------------'
 
 print '========== The activity around the latest post =========='
 for post in latest_post.activity():
-  print 'Type: %s' % post.type #repost or commment
-  print 'Comment: %s' % post.comment
-  print 'GUID: %s' % post.guid
-  print '----------------------------------------------'
+    print 'Type: %s' % post.type #repost or commment
+    print 'Comment: %s' % post.comment
+    print 'GUID: %s' % post.guid
+    print '----------------------------------------------'
+
+print '========== Most reposted posts from gchapiewski =========='
+for post in meme.most_reposted_posts():
+    print 'Type: %s' % post.type #repost or commment
+    print 'Comment: %s' % post.comment
+    print 'GUID: %s' % post.guid
+    print 'reposts: %s' % post.repost_count
+    print '----------------------------------------------'
+
+print '========== 2 most reposted TEXT posts from gchapiewski =========='
+for post in meme.most_reposted_posts(media='text', count=2):
+    print 'Type: %s' % post.type #repost or commment
+    print 'Comment: %s' % post.comment
+    print 'GUID: %s' % post.guid
+    print 'reposts: %s' % post.repost_count
+    print '----------------------------------------------'
