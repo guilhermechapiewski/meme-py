@@ -117,9 +117,9 @@ h3. Contributors
 
 h2. Mailing list and further questions
 
-If you want to contribute and still have some questions or if you are still having trouble using *meme-py*, join the "*meme-dev* group ant Yahoo! Groups":http://tech.groups.yahoo.com/group/meme-dev/ where you will find other developers that use Yahoo! Meme and APIs for many programming languages.
+If you want to contribute and still have some questions or if you are still having trouble using *meme-py*, join the "*meme-dev* group at Yahoo! Groups":http://tech.groups.yahoo.com/group/meme-dev/ where you will find other developers that use Yahoo! Meme and APIs for many programming languages.
 
-If you have further questions, just drop me a message at *guilherme dot chapiewski at gmail dot com*, on Meme ("/guilherme_chapiewski":http://meme.yahoo.com/guilherme_chapiewski/) or on Twitter ("@gchapiewski":http://twitter.com/gchapiewski).
+If you have further questions, just drop me a message at *guilherme dot chapiewski at gmail dot com*, on Meme ("/gchapiewski":http://meme.yahoo.com/gchapiewski/) or on Twitter ("@gchapiewski":http://twitter.com/gchapiewski).
 
 h2. What is Meme?
 
