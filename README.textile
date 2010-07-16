@@ -18,7 +18,7 @@ You can also install the latest stable release from "PyPI":http://pypi.python.or
 
 h2. How to use?
 
-Check it out some simple and cool examples (for more please check "examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples.py file):
+Check it out some simple examples (for more please check "examples.py":http://github.com/guilhermechapiewski/meme-py/blob/master/examples.py file):
 
 h3. Get popular posts:
 
@@ -100,13 +100,13 @@ h3. Get the most reposted posts from an user:
 
 h2. How to report bugs
 
-Go to the "Issues":http://github.com/guilhermechapiewski/meme-py/issues section and please provide as much detail as you can in order to help us solve the problem.
+Go to the "Issues":http://github.com/guilhermechapiewski/meme-py/issues section and please provide as much detail as you can.
 
 h2. How to contribute
 
-This API is on an early stage of development and contributors are very welcome :) Go ahead and "fork the project":http://github.com/guilhermechapiewski/meme-py/fork here on Github! I'll be happy to integrate your updates later, just "request pull" when you are done.
+Contributors are very welcome :) Go ahead and "fork the project":http://github.com/guilhermechapiewski/meme-py/fork here on Github and "request pull" when you are done.
 
-*Please* follow "PEP-8":http://www.python.org/dev/peps/pep-0008/ rules and include unit tests!
+*Please* try to follow "PEP-8":http://www.python.org/dev/peps/pep-0008/ rules and include unit tests!
 
 h3. Contributors
 
@@ -118,8 +118,6 @@ h3. Contributors
 h2. Mailing list and further questions
 
 If you want to contribute and still have some questions or if you are still having trouble using *meme-py*, join the "*meme-dev* group at Yahoo! Groups":http://tech.groups.yahoo.com/group/meme-dev/ where you will find other developers that use Yahoo! Meme and APIs for many programming languages.
-
-If you have further questions, just drop me a message at *guilherme dot chapiewski at gmail dot com*, on Meme ("/gchapiewski":http://meme.yahoo.com/gchapiewski/) or on Twitter ("@gchapiewski":http://twitter.com/gchapiewski).
 
 h2. What is Meme?
 
